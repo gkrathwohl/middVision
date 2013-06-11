@@ -259,7 +259,6 @@ if __name__ == '__main__':
     while(step == "rectifyambient"):
         rectambdir = os.path.join(scenedir,"computed/rectifiedAmbient")
         safemkdirs(rectambdir)
-<<<<<<< HEAD
         intrinsics = [os.path.join(tempdir,"computed/calibration/Intrinsicsleft.xml"), os.path.join(tempdir,"computed/calibration/Intrinsicsright.xml")]
         distortion = [os.path.join(tempdir,"computed/calibration/Distortionleft.xml"), os.path.join(tempdir,"computed/calibration/Distortionright.xml")]
         rotation = [os.path.join(tempdir,"computed/calibration/Rotationleft.xml"), os.path.join(tempdir,"computed/calibration/Rotationright.xml")]
@@ -278,7 +277,6 @@ if __name__ == '__main__':
         	execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(dir,"right/*.JPG"))
         	i = i +1
 
-=======
         outLeft = rectambdir+"/left"
         outRight = rectambdir+"/right"
         safemkdirs(outLeft)
@@ -311,7 +309,7 @@ if __name__ == '__main__':
             execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/left/*.JPG"))
             execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/right/*.JPG"))
         
->>>>>>> greg
+
         answer = ""
         if(args.auto):
             step = "confidence"

@@ -1,13 +1,20 @@
 #!/usr/bin/python
 
 '''
+Active Lighting control script to control all steps for Active Lighting process.
+Original version works for file system 2011. In Summer 2012, we use new file system this year,
+thus this script is adjusted to fit for the new file system.
+For more information, see Active Lighting 2012 Instruction.
+
 Created on Jun 28, 2011
+Edited on 2012.6 by Nera Nesic for intermediate result directory
+Edited on 2012.8.3
 
-<<<<<<< HEAD
-@author: wwestlin
-=======
+Original Author: wwestlin
+Edited Author: Xi Wang
+
+
 Edited 2013 Authors: Greg & York
-
 
 '''
 
@@ -252,7 +259,6 @@ if __name__ == '__main__':
     while(step == "rectifyambient"):
         rectambdir = os.path.join(scenedir,"computed/rectifiedAmbient")
         safemkdirs(rectambdir)
-<<<<<<< HEAD
         intrinsics = [os.path.join(tempdir,"computed/calibration/Intrinsicsleft.xml"), os.path.join(tempdir,"computed/calibration/Intrinsicsright.xml")]
         distortion = [os.path.join(tempdir,"computed/calibration/Distortionleft.xml"), os.path.join(tempdir,"computed/calibration/Distortionright.xml")]
         rotation = [os.path.join(tempdir,"computed/calibration/Rotationleft.xml"), os.path.join(tempdir,"computed/calibration/Rotationright.xml")]
@@ -271,7 +277,6 @@ if __name__ == '__main__':
         	execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(dir,"right/*.JPG"))
         	i = i +1
 
-=======
         outLeft = rectambdir+"/left"
         outRight = rectambdir+"/right"
         safemkdirs(outLeft)
