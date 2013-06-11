@@ -1,15 +1,21 @@
 #!/usr/bin/python
 
 '''
-Created on Jun 28, 2011
+Active Lighting control script to control all steps for Active Lighting process.
+Original version works for file system 2011. In Summer 2012, we use new file system this year,
+thus this script is adjusted to fit for the new file system.
+For more information, see Active Lighting 2012 Instruction.
 
-<<<<<<< HEAD
-@author: wwestlin
-=======
+Created on Jun 28, 2011
+Edited on 2012.6 by Nera Nesic for intermediate result directory
+Edited on 2012.8.3
+
+Original Author: wwestlin
+Edited Author: Xi Wang
+
+
 Edited 2013 Authors: Greg & York
 
-
->>>>>>> greg
 '''
 
 import sys
