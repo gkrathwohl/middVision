@@ -1,23 +1,11 @@
- #!/usr/bin/python
+#!/usr/bin/python
 
 '''
-Active Lighting control script to control all steps for Active Lighting process.
-Original version works for file system 2011. In Summer 2012, we use new file system this year,
-thus this script is adjusted to fit for the new file system.
-For more information, see Active Lighting 2012 Instruction.
-
 Created on Jun 28, 2011
-Edited on 2012.6 by Nera Nesic for intermediate result directory
-Edited on 2012.8.3
 
-Original Author: wwestlin
-Edited Author: Xi Wang
-
-
-Edited 2013 Authors: Greg & York
-Last edit: 
+@author: wwestlin
 '''
-from sys import exit
+
 import sys
 import os
 import glob
@@ -56,7 +44,6 @@ def execute(cmd):
     
 def VisColor(dir, input, outputx, outputy, speed="10"):
     execute("FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
-
 def VisGrey(dir, input,outputx, outputy, reverse = False):
     if(reverse):
         execute("FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
@@ -72,25 +59,22 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Control the processing pipeline for ActiveLighting4")
     parser.add_argument("targetScene", nargs=1, help="The scene folder to be processed. See README for directory structure expected.")
     parser.add_argument("-v", "--visualize", dest="visualize", action="store_const", const=True, default=False, help="Visualize processing at every step")
-    parser.add_argument("-m", "--intermediateRes", dest="intermediateRes", action="store_const", const=True, default=False, help="Store the intermediary results in the scene folder rather than on a temp location. Changed by Nera Nesic")
-    
+    parser.add_argument("-m", "--intermediateRes", dest="intermediateRes", action="store_const", const=True, default=False, help="Store the intermediary results in the scene folder rather than on a temp location")
     parser.add_argument("-a", "--auto", dest="auto", action="store_const", const=True, default=False, help="Do not ask for confirmation before going to the next step")
     parser.add_argument("-q", "--query", dest="query", action="store_const", const=True, default=False, help="Query for processing parameters at each step, rather than using defaults or options")
     parser.add_argument("-s", "--step", dest="step", default="calibrate", help="The step of the pipeline to start from. See README for steps. Errors may occur if a step is chosen which expects files or folder which have not yet been computed")
-    parser.add_argument("-ip","--intermediatePlace", dest="intermediatePlace", default="/home2/tmp/intermediates", help="The place for intermediate result. Default to '/home2/tmp/intermediates'")
     
-    parser.add_argument("-i", "--width", dest="width", default="17", help="The width of the calibration pattern used. Defaults to 17")
-    parser.add_argument("-j", "--height", dest="height", default="12", help="The height of the calibration pattern used. Defaults to 12")
+    parser.add_argument("-i", "--width", dest="width", default="17", help="The width of the calibration pattern used (# of squares minus 1). Defaults to 17")
+    parser.add_argument("-j", "--height", dest="height", default="12", help="The height of the calibration pattern used (# of squares minus 1). Defaults to 12")
     
-    #parser.add_argument("-c", "--code", dest="code", default="../codes/minSW.dat", help="The code file to use for decoding. Defaults to '../codes/minSW.dat' ")
-    parser.add_argument("-c", "--code", dest="code", default="minSW.dat", help="The code file to use for decoding. Changed by Nera Nesic.")
-
+    parser.add_argument("-c", "--code", dest="code", default="/home/nnesic/public_html/research2012/codes/minSW.dat", help="The code file to use for decoding. Defaults to '../codes/minSW.dat' ")
+    
     parser.add_argument("-t", "--certainty", dest="cert", default="115", help="The certainty threshold to use during thresholding. Defaults to 115.")
     
-    parser.add_argument("-xi", "--xmin", dest="xmin", default="-1000", help="X minimum for disparity search. Defaults to -1000")
-    parser.add_argument("-xx", "--xmax", dest="xmax", default="1000", help="X maximum for disparity search. Defaults to 1000")
-    parser.add_argument("-yi", "--ymin", dest="ymin", default="-5", help="Y minimum for disparity search. Defaults to -5")
-    parser.add_argument("-yx", "--ymax", dest="ymax", default="5", help="Y maximum for disparity search. Defaults to 5")
+    parser.add_argument("-xi", "--xmin", dest="xmin", default="-1200", help="X minimum for disparity search. Defaults to -600")
+    parser.add_argument("-xx", "--xmax", dest="xmax", default="1200", help="X maximum for disparity search. Defaults to 600")
+    parser.add_argument("-yi", "--ymin", dest="ymin", default="-5", help="Y minimum for disparity search. Defaults to -3")
+    parser.add_argument("-yx", "--ymax", dest="ymax", default="5", help="Y maximum for disparity search. Defaults to 3")
     
     parser.add_argument("-vi", "--vmin", dest="vmin", default=None, help="Minimum disparity for grey visualization. Defaults to image minimum disparity.")
     parser.add_argument("-vx", "--vmax", dest="vmax", default=None, help="Maximum disparity for grey visualization. Defaults to image maximum disparity.")
@@ -100,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument("-ryi", "--rymin", dest="rymin", default="0", help="Y minimum for reprojection fitting as a fraction. Defaults to 0.")
     parser.add_argument("-ryx", "--rymax", dest="rymax", default="1", help="Y maximum for reprojection fitting as a fraction. Defaults to 1.")
     
-    parser.add_argument("-gs", "--groupsize", dest="gs", default="2", help="Minimum group size to accept during disparity map merging. Defaults to 2")
+    parser.add_argument("-gs", "--groupsize", dest="gs", default="1", help="Minimum group size to accept during disparity map merging. Defaults to 1")
     parser.add_argument("-o", "--visonly", dest="visonly", action="store_const", const=True, default=False, help="Only recompute the visualizations. Starts from the disparity step and reruns FloVis")
     parser.add_argument("--sitedir", dest="sitedir", default=None, help="Directory to build visualization website in")
     parser.add_argument("-pc","--previousconfig", dest="prevconfig", action="store_const", const=True, default=False, help="Load the last used configuration from config.txt and re-use it. Overrides any other options")
@@ -114,39 +98,36 @@ if __name__ == '__main__':
     
     
     
-    
+   
     if args.visonly:
         if step != "merge" and step != "reproject":
             step = "disparity"
-
-    if(not os.path.exists(args.targetScene[0])):
-        print "Target directory does not exist"
-        exit()
     scenedir = args.targetScene[0]
-
+    if(not os.path.exists(scenedir)):
+        print "Target directory does not exist"
     if(not scenedir[len(scenedir)-1] == '/'):
         scenedir += '/'
-        
-    #temporary directory for intermediary results  
-    if (args.intermediateRes):
-        tempdir = scenedir       
-    else:
-        #here we set home2 as place for intermediary results.
-        #For more information, see Active Lighting 2012 Instruction 
-        tempdir = args.intermediatePlace          
-        p = re.compile("/\w*/$")
-        t = p.findall(scenedir)
-
-        # if can't use home2, or otherwise fails, use -m
-        if len(t) == 0:
-            print("Default temp directory didnt work. Storing temp files in scene directory.")
-            tempdir = scenedir
-        else:
-            tempdir = tempdir +"" + t[0]
-            safemkdirs(tempdir)        
-
-        
     
+    #temporary directory for intermediary results 
+
+    #if -m 
+	if (args.intermediateRes):
+		tempdir = scenedir
+	else:
+		tempdir = "/home2/tmp/intermediates"  
+		p = re.compile("/\w*/$")
+		t = p.findall(scenedir)
+
+	        # if can't use home2, or otherwise fails, use -m
+		if len(t) == 0:
+			print("Default temp directory didnt work. Storing temp files in scene directory.")
+			tempdir = scenedir
+		else:
+			tempdir = tempdir +"" + t[0]
+			safemkdirs(tempdir)
+	    
+    
+    print ("done")
     if(args.query):
         args.xmin = None
         args.xmax = None
@@ -173,7 +154,7 @@ if __name__ == '__main__':
     else:
         vmax = args.vmax
     
-    configpath = scenedir+"/computed/config.txt"
+    configpath = tempdir+"/computed/config.txt"
     if(os.path.exists(configpath)):
         config = json.load(open(configpath))
     else:            
@@ -190,33 +171,13 @@ if __name__ == '__main__':
         xmax =  config["VisualizationMaximumDepth"]
         xmin =  config["VisualizationMinimumDepth"]
         
-    #this calibration step only works for 2 DSLR cameras
-    #for point-shoot cameras, please see Control/calibScript.py
     
     while(step == "calibrate"):
         calibDir = os.path.join(scenedir,"orig/calibration")
-        #confidenceDir = os.path.join(scenedir,"computed/calibration")
-        confidenceDir = os.path.join(scenedir,"computed/calibration/left2right")
+        confidenceDir = os.path.join(tempdir,"computed/calibration")
         safemkdirs(confidenceDir)
-        leftDir = os.path.join(calibDir,"left/*.JPG")
-        rightDir = os.path.join(calibDir,"right/*.JPG")
-
-        #check for images in leftDir and rightDir
-        leftIms = glob.glob(leftDir)
-        rightIms = glob.glob(rightDir)
-        if leftIms != rightIms:
-        	print("Left and right calibration folders do not contain same number of images.\n")
-        	exit(0)
-        while (leftIms == 0 or rightIms == 0):
-        	print("No JPG images found in calibration folders...")
-        	subdirs = os.listdir(leftIms)
-        	for thing in subdirs:
-				if os.path.isdir(os.path.join(leftIms, thing))
-					print("Subdirectory " + thing + " found. Searching for images within this subdirectory.")
-					os.path.join(leftIms, thing)
-					os.path.join(rightIms, thing)
-									
-		contin = raw_input()
+        leftDir = os.path.join(calibDir,"left/*")
+        rightDir = os.path.join(calibDir,"right/*")
         
         w = args.width
         h = args.height
@@ -246,13 +207,14 @@ if __name__ == '__main__':
         sceneName = os.path.split(os.path.abspath(scenedir))[1]
         
         photoDirs = glob.glob(os.path.join(scenedir, "orig/greycode/*"))
+        
         rectifiedDir = os.path.join(tempdir,"computed/rectified")
         safemkdirs(rectifiedDir)
         
-        intrinsics = [os.path.join(scenedir,"computed/calibration/left2right/Intrinsicsleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Intrinsicsright.xml")]
-        distortion = [os.path.join(scenedir,"computed/calibration/left2right/Distortionleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Distortionright.xml")]
-        rotation = [os.path.join(scenedir,"computed/calibration/left2right/Rotationleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Rotationright.xml")]
-        projection = [os.path.join(scenedir,"computed/calibration/left2right/Projectionleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Projectionright.xml")]
+        intrinsics = [os.path.join(tempdir,"computed/calibration/Intrinsicsleft.xml"), os.path.join(tempdir,"computed/calibration/Intrinsicsright.xml")]
+        distortion = [os.path.join(tempdir,"computed/calibration/Distortionleft.xml"), os.path.join(tempdir,"computed/calibration/Distortionright.xml")]
+        rotation = [os.path.join(tempdir,"computed/calibration/Rotationleft.xml"), os.path.join(tempdir,"computed/calibration/Rotationright.xml")]
+        projection = [os.path.join(tempdir,"computed/calibration/Projectionleft.xml"), os.path.join(tempdir,"computed/calibration/Projectionright.xml")]
         
         for dir in photoDirs:
             match = re.match(".*take([0-9]+)exp([0-9]+)P([0-9]+)",dir)
@@ -283,48 +245,26 @@ if __name__ == '__main__':
 
 
     while(step == "rectifyambient"):
-
-        #read .xml files
-        intrinsics = [os.path.join(scenedir,"computed/calibration/left2right/Intrinsicsleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Intrinsicsright.xml")]
-        distortion = [os.path.join(scenedir,"computed/calibration/left2right/Distortionleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Distortionright.xml")]
-        rotation = [os.path.join(scenedir,"computed/calibration/left2right/Rotationleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Rotationright.xml")]
-        projection = [os.path.join(scenedir,"computed/calibration/left2right/Projectionleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Projectionright.xml")]
-        
-        #rectify ambient images
         rectambdir = os.path.join(scenedir,"computed/rectifiedAmbient")
         safemkdirs(rectambdir)
-        outLeft = rectambdir+"/left"
-        outRight = rectambdir+"/right"
-        safemkdirs(outLeft)
-        safemkdirs(outRight)
-        execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambient/L*/left/*.JPG"))
-        execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambient/L*/right/*.JPG"))
-        
-        #rectify ambient with ball images if exist
-	if(os.path.exists(os.path.join(scenedir,"orig/ambientBall"))):
-		rectambwbdir = os.path.join(scenedir,"computed/rectifiedAmbientBall") 
-		safemkdirs(rectambwbdir)
-		outLeft = rectambwbdir+"/left"
-		outRight = rectambwbdir+"/right"
-		safemkdirs(outLeft)
-		safemkdirs(outRight)
-		execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientBall/L*/left/*.JPG"))
-		execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientBall/L*/right/*.JPG"))
-	else:
-		print("No ambient ball images found, continuing")
-        
-        #rectify perturbed ambient images if exist
-        #for some scenes, we do not have this. In summer 2012, Classroom1 and Garage secen have this folder.
-        if(os.path.exists(os.path.join(scenedir,"orig/ambientOccluders"))):
-            rectambodir = os.path.join(scenedir,"computed/rectifiedAmbientOccluders") 
-            safemkdirs(rectambodir)
-            outLeft = rectambodir+"/left"
-            outRight = rectambodir+"/right"
-            safemkdirs(outLeft)
-            safemkdirs(outRight)
-            execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/left/*.JPG"))
-            execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/right/*.JPG"))
-        
+        intrinsics = [os.path.join(tempdir,"computed/calibration/Intrinsicsleft.xml"), os.path.join(tempdir,"computed/calibration/Intrinsicsright.xml")]
+        distortion = [os.path.join(tempdir,"computed/calibration/Distortionleft.xml"), os.path.join(tempdir,"computed/calibration/Distortionright.xml")]
+        rotation = [os.path.join(tempdir,"computed/calibration/Rotationleft.xml"), os.path.join(tempdir,"computed/calibration/Rotationright.xml")]
+        projection = [os.path.join(tempdir,"computed/calibration/Projectionleft.xml"), os.path.join(tempdir,"computed/calibration/Projectionright.xml")]
+     
+        photoDirs = glob.glob(os.path.join(scenedir, "orig/ambient/*"))
+        naturalsort(photoDirs)
+        print photoDirs
+        i=0
+        for dir in photoDirs:
+        	outLeft = rectambdir+"/L"+str(i)+"/left"
+      		outRight = rectambdir+"/L"+str(i)+"/right"
+      		safemkdirs(outLeft)
+      		safemkdirs(outRight)
+        	execute("ActiveLighting4 rectify "+outLeft +" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(dir,"left/*.JPG"))
+        	execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(dir,"right/*.JPG"))
+        	i = i +1
+
         answer = ""
         if(args.auto):
             step = "confidence"
@@ -438,7 +378,7 @@ if __name__ == '__main__':
             
             codefile = args.code
             if(codefile == None):
-                codefile = raw_input("No code file")
+                codefile = raw_input("Code file?")
             
             phs = glob.glob(dir+"/left/*")
             naturalsort(phs)
@@ -466,11 +406,9 @@ if __name__ == '__main__':
             cleanExit(config, configpath)
         if(answer == "repeat" or answer == "r"):
             step = "decode"
-    
-    #generate disparity of each projectors. In summer 2012 file system, it is as disparityintermediate.
-    #but keep the step name as disparity             
+                
     while(step == "disparity"):
-        dispDir = os.path.join(scenedir,"computed/disparityintermediate")
+        dispDir = os.path.join(tempdir,"computed/disparity")
         safemkdirs(dispDir)
         dirs = glob.glob(os.path.join(tempdir,"computed/decode")+"/*")
         
@@ -527,7 +465,7 @@ if __name__ == '__main__':
         reDir = os.path.join(tempdir,"computed/reproject")
         codeDir = os.path.join(tempdir,"computed/decode")
         safemkdirs(reDir)
-        dirs = glob.glob(os.path.join(scenedir,"computed/disparityintermediate")+"/*")
+        dirs = glob.glob(os.path.join(tempdir,"computed/disparity")+"/*")
         
         xmin = args.rxmin
         xmax = args.rxmax
@@ -584,12 +522,11 @@ if __name__ == '__main__':
         if(answer == "repeat" or answer == "r"):
             step = "reproject"
             
-    #this is disparity for file system 2012.
-           
+             
     while(step == "merge"):   
-        mergeDir = os.path.join(scenedir,"computed/disparity")
+        mergeDir = os.path.join(scenedir,"computed/merge")
         reproDir = os.path.join(tempdir,"computed/reproject")
-        dispDir = os.path.join(scenedir,"computed/disparityintermediate")
+        dispDir = os.path.join(tempdir,"computed/disparity")
         safemkdirs(mergeDir)
         disps = glob.glob(dispDir+"/*")
         repros = glob.glob(reproDir+"/*")
@@ -638,24 +575,32 @@ if __name__ == '__main__':
         if(answer == "no" or answer == "n"):
             cleanExit(config, configpath)
         if(answer == "repeat" or answer == "r"):
-            step = "merge"      
-#    while(step == "buildsite" and args.sitedir != None):
-#        execute("ActiveLightingBuildSite.py "+scenedir+" "+args.sitedir)
-#        config["WebsiteDirectory"] = args.sitedir
-#        answer = ""
-#        
-#        if(args.auto):
-#            step = "none"
-#        else:
-#            answer = raw_input("Keep Going? (yes/no/repeat) ")
-#        
-#        if(answer == "yes" or answer == "y" or answer == ""):
-#            step = "none"
-#        if(answer == "no" or answer == "n"):
-#            cleanExit(config, configpath)
-#        if(answer == "repeat" or answer == "r"):
-#            step = "buildsite" 
-    print "Done with the scene and clean exit"      
+            step = "merge"
+   
+         
+    while(step == "buildsite"):
+		if args.sitedir == None:
+			sitedir = raw_input("Specify site directory: ")
+		else:
+			sitedir = args.sitedir
+
+		print("Building site in " + sitedir)
+		execute("ActiveLightingBuildSite.py "+scenedir+" "+sitedir)
+		config["WebsiteDirectory"] = sitedir
+		answer = ""
+        
+		if(args.auto):
+			step = "none"
+		else:
+			answer = raw_input("Keep Going? (yes/no/repeat) ")
+        
+		if(answer == "yes" or answer == "y" or answer == ""):
+			step = "none"
+		if(answer == "no" or answer == "n"):
+			cleanExit(config, configpath)
+		if(answer == "repeat" or answer == "r"):
+			step = "buildsite" 
+            
     cleanExit(config, configpath) 
                 
                 
