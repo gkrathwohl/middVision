@@ -205,8 +205,8 @@ if __name__ == '__main__':
         leftIms = glob.glob(leftDir)
         rightIms = glob.glob(rightDir)
         if leftIms != rightIms:
-            print("Left and right calibration folders do not contain same number of images.\n")
-            exit(0)
+        	print("Left and right calibration folders do not contain same number of images.\n")
+        	exit(0)
         while (leftIms == 0 or rightIms == 0):
             print("No JPG images found in calibration folders...")
             subdirs = os.listdir(leftIms)
