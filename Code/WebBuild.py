@@ -88,26 +88,21 @@ convert(disparitydir+"righty.pgm", dst+"/imgs/disparity/rightyg.s.jpg", size="60
 print "Done with disparity"
 
 #this part is to get how many exposure there
-for t in range (0, 1):
-    tempdir = src + "/computed/rectifiedAmbient/left"
-    print(tempdir)
+for t in range (0, 12):
+    tempdir = src + "/computed/rectifiedAmbient/L"+str(t)+"/left"
     if(os.path.exists(tempdir)):
-	    print("directory exists")
-	    globdir=glob.glob(tempdir+"/*.ppm")
-	    index = 0
-	    for photo in globdir:
-	       print("photo")
-	       index += 1
-	       exposure = index
-    else:
-	print(tempdir + " does not exist")
+        globdir=glob.glob(tempdir+"/*.ppm")
+        index = 0
+        for photo in globdir:
+            index += 1
+        exposure = index
 
 #change rectifiedAmbient
 safemkdirs(dst+"/imgs/rectifiedAmbient")
 safemkdirs(dst+"/imgs/rectifiedAmbient/left")
 safemkdirs(dst+"/imgs/rectifiedAmbient/right")
 
-rect = glob.glob(src+"/computed/rectifiedAmbient/left/*.ppm")
+rect = glob.glob(src+"/computed/rectifiedAmbient/L*/left/*.ppm")
 #rect.sort()
 naturalsort(rect)
 #print rect
@@ -120,7 +115,7 @@ for photo in rect:
 nrect=index
     
 index = 0    
-rect = glob.glob(src+"/computed/rectifiedAmbient/right/*.ppm")
+rect = glob.glob(src+"/computed/rectifiedAmbient/L*/right/*.ppm")
 #rect.sort()
 naturalsort(rect)
 for photo in rect:
@@ -140,7 +135,7 @@ for photo in rectball:
 index = nrect
 rectball = glob.glob(src+"/computed/rectifiedAmbientBall/L*/right/*.ppm")
 naturalsort(rectball)
-for photo in rect:
+for photo in rectball:
     convert(photo, dst+"/imgs/rectifiedAmbient/right/image-"+`index`+".jpg")
     convert(photo, dst+"/imgs/rectifiedAmbient/right/image-"+`index`+".s.jpg", size = "600x400")
     index += 1
