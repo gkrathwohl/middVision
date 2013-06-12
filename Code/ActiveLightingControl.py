@@ -71,6 +71,7 @@ def cleanExit(config, configpath):
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description="Control the processing pipeline for ActiveLighting4")
+    #parser.add_argument("-pp" "--path to processing programs",  
     parser.add_argument("targetScene", nargs=1, help="The scene folder to be processed. See README for directory structure expected.")
     parser.add_argument("-v", "--visualize", dest="visualize", action="store_const", const=True, default=False, help="Visualize processing at every step")
     parser.add_argument("-m", "--intermediateRes", dest="intermediateRes", action="store_const", const=True, default=False, help="Store the intermediary results in the scene folder rather than on a temp location. Changed by Nera Nesic")
@@ -84,7 +85,7 @@ if __name__ == '__main__':
     parser.add_argument("-j", "--height", dest="height", default="12", help="The height of the calibration pattern used. Defaults to 12")
     
     #parser.add_argument("-c", "--code", dest="code", default="../codes/minSW.dat", help="The code file to use for decoding. Defaults to '../codes/minSW.dat' ")
-    parser.add_argument("-c", "--code", dest="code", default="minSW.dat", help="The code file to use for decoding. Changed by Nera Nesic.")
+    parser.add_argument("-c", "--code", dest="code", default="minSW.dat", help="The code file to use for decoding. Should be in same directory as script.")
 
     parser.add_argument("-t", "--certainty", dest="cert", default="115", help="The certainty threshold to use during thresholding. Defaults to 115.")
     
@@ -139,13 +140,14 @@ if __name__ == '__main__':
         t = p.findall(scenedir)
 
         # if can't use home2, or otherwise fails, use -m
-        if len(t) == 0:
-            print("Default temp directory didnt work. Storing temp files in scene directory.")
-            tempdir = scenedir
-        else:
+        try:
             tempdir = tempdir +"" + t[0]
-            safemkdirs(tempdir)        
-
+            safemkdirs(tempdir)      
+        except:
+            print("* * * * * * * * ")
+            print("Error: Default temp directory didnt work. Storing temp files in scene directory.")
+            tempdir = scenedir
+            safemkdirs(tempdir) 
         
     
     if(args.query):
@@ -202,22 +204,22 @@ if __name__ == '__main__':
         leftDir = os.path.join(calibDir,"left/*.JPG")
         rightDir = os.path.join(calibDir,"right/*.JPG")
 
-        #check for images in leftDir and rightDir
+        #check for images in leftDir and rightDir (this could be done for other steps too)
         leftIms = glob.glob(leftDir)
         rightIms = glob.glob(rightDir)
-        if leftIms != rightIms:
-        	print("Left and right calibration folders do not contain same number of images.\n")
-        	exit(0)
+        if len(leftIms) != len(rightIms):
+            print("Error: Left and right calibration folders do not contain same number of images.\n")
+            exit(0)
         while (leftIms == 0 or rightIms == 0):
-        	print("No JPG images found in calibration folders...")
-        	subdirs = os.listdir(leftIms)
-        	for thing in subdirs:
-				if os.path.isdir(os.path.join(leftIms, thing))
-					print("Subdirectory " + thing + " found. Searching for images within this subdirectory.")
-					os.path.join(leftIms, thing)
-					os.path.join(rightIms, thing)
+            print("No JPG images found in calibration folders...")
+            subdirs = os.listdir(leftIms)
+            for thing in subdirs:
+		        if (os.path.isdir(os.path.join(leftIms, thing))):
+		            print("Subdirectory " + thing + " found. Searching for images within this subdirectory.")
+		            os.path.join(leftIms, thing)
+		            os.path.join(rightIms, thing)
 									
-		contin = raw_input()
+	    contin = raw_input()
         
         w = args.width
         h = args.height
