@@ -56,13 +56,13 @@ def execute(cmd):
     os.system(cmd)
     
 def VisColor(dir, input, outputx, outputy, speed="10"):
-    execute("FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+    execute("FloVis/FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
 
 def VisGrey(dir, input,outputx, outputy, reverse = False):
     if(reverse):
-        execute("FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+        execute("FloVis/FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
     else:
-        execute("FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+        execute("FloVis/FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
     
 def cleanExit(config, configpath):
     json.dump(config, open(configpath, 'w'), sort_keys=True, indent = 4 )
@@ -564,8 +564,8 @@ if __name__ == '__main__':
             safemkdirs(outputdir)
             if not args.visonly:
                 execute("ActiveLighting/ActiveLighting4 reproject "+outLeft+" "+dir+"/Xout0.flo "+codeDir+"/"+projector+"/left/result.flo"+edges)
-            execute("FloVis "+outLeft+" "+outputdir+"/"+projector+"cam0.ppm")
-            execute("FloVis -g "+outLeft+" "+outputdir+"/"+projector+"cam0.pgm")
+            execute("FloVis/FloVis "+outLeft+" "+outputdir+"/"+projector+"cam0.ppm")
+            execute("FloVis/FloVis -g "+outLeft+" "+outputdir+"/"+projector+"cam0.pgm")
             VisColor(outputdir, projector+"cam0.flo", projector+"cam0x.ppm", projector+"cam0y.ppm")
             VisGrey(outputdir, projector+"cam0.flo", projector+"cam0x.pgm", projector+"cam0y.pgm", reverse = True)
             
