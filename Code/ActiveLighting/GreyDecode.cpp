@@ -76,11 +76,11 @@ void store_bit(CByteImage im, CIntImage val, CIntImage unk, int k)
         unsigned int *u = (unsigned int *)&unk.Pixel(0, y, 0);
 
         for (x = 0; x < w; x++) {
-	    if (p[x] == 255)
-		v[x] |= bit;
-	    else if (p[x] == 128)
-		u[x] |= bit;
-	}
+	        if (p[x] == 255)
+		        v[x] |= bit;
+	        else if (p[x] == 128)
+		        u[x] |= bit;
+	    }
     }
 }
 
@@ -93,17 +93,17 @@ void decodeGrey(CIntImage val, CIntImage unk)
     int x, y, w = sh.width, h = sh.height;
 	
     for (y = 0; y < h; y++) {
-	unsigned int *v = (unsigned int *)&val.Pixel(0, y, 0);
-	unsigned int *u = (unsigned int *)&unk.Pixel(0, y, 0);
-	for (x = 0; x < w; x++) {
-	    unsigned int c = invgreycode(v[x]);
-	    //unsigned int co = invgreycodeOld(v[x]);
-	    //printf("%d %d\n",c,co);
-	    if (u[x] == 0)
-		v[x] = c;
-	    else
-		v[x] = UNK; // uncertain pixel
-	}
+	    unsigned int *v = (unsigned int *)&val.Pixel(0, y, 0);
+	    unsigned int *u = (unsigned int *)&unk.Pixel(0, y, 0);
+	    for (x = 0; x < w; x++) {
+	        unsigned int c = invgreycode(v[x]);
+	        //unsigned int co = invgreycodeOld(v[x]);
+	        //printf("%d %d\n",c,co);
+	        if (u[x] == 0)
+		        v[x] = c;
+	        else
+		        v[x] = UNK; // uncertain pixel
+	    }
     }
 }
 

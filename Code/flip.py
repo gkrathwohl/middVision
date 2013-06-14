@@ -9,6 +9,9 @@
 # v1.2 6/30/2011 - shows color under cursor
 # v1.3 7/15/2011 - major clean up, used tuples everywhere, changed representation of crop area
 
+# Greg & York Summer 2013
+# v1.4 6/16/2013 - shows HSV color under cursor
+
 # TODO:
 # add zoom out feature!
 # (need to figure out how to clear image area out of bounds)
@@ -224,10 +227,13 @@ class flipper:
         else:
 			xy = self.cursor
 			pix = getpixel(self.fullim1, xy)
-			#print(pix[1])
-			#rgb = re.findall("\d+", pix)
-			hsv = rgb2hsv(pix[0], pix[1], pix[2])
-        self.lcursor.configure(text = "Position: %5d,%5d: RGB: %8s HSV: (%2d %.2f %.2f)" % (xy + (pix,) + (hsv[0], hsv[1], hsv[2])))
+			if (len([pix]) == 3): #color, 3 bands
+			    hsv = rgb2hsv(pix[0], pix[1], pix[2])
+			elif (len([pix]) == 1): #grayscale, 1 band
+			    hsv = rgb2hsv(pix, pix, pix)
+			else:
+			    hsv = (0, 0, 0)
+        self.lcursor.configure(text = "Position: %5d,%5d: RGB: %6d HSV: %2d %.2f %.2f" % (xy + (pix,) + (hsv[0], hsv[1], hsv[2])))
 
     # update images
     def update(self):
