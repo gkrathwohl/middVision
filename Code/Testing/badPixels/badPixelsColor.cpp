@@ -99,7 +99,7 @@ void bad(CByteImage &in, CByteImage &out)
 				avgNeighbors = prevGood;
 			
 			//if the level is different from the previous level set black
-			if ((abs(level2 - avgNeighbors) > 60) && level2 != 0){
+			if ((abs(level2 - avgNeighbors) > 70) && level2 != 0){
 				out.Pixel(x,y,0) = 255;
 				out.Pixel(x,y,1) = 255; 
 				out.Pixel(x,y,2) = 255;

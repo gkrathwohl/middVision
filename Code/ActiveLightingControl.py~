@@ -13,6 +13,13 @@ Edited on 2012.8.3
 Original Author: wwestlin
 Edited Author: Xi Wang
 
+<<<<<<< HEAD
+=======
+
+Edited 2013 Authors: Greg & York
+
+
+>>>>>>> c390d8ede73b2afd487d82ccfaf4661c89b0e917
 '''
 
 import sys
@@ -52,13 +59,14 @@ def execute(cmd):
     os.system(cmd)
     
 def VisColor(dir, input, outputx, outputy, speed="10"):
-    execute("FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+    
+    execute("FloVis/FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
 
 def VisGrey(dir, input,outputx, outputy, reverse = False):
     if(reverse):
-        execute("FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+        execute("FloVis/FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
     else:
-        execute("FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+        execute("FloVis/FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
     
 def cleanExit(config, configpath):
     json.dump(config, open(configpath, 'w'), sort_keys=True, indent = 4 )
@@ -67,6 +75,7 @@ def cleanExit(config, configpath):
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description="Control the processing pipeline for ActiveLighting4")
+    #parser.add_argument("-pp" "--path to processing programs",  
     parser.add_argument("targetScene", nargs=1, help="The scene folder to be processed. See README for directory structure expected.")
     parser.add_argument("-v", "--visualize", dest="visualize", action="store_const", const=True, default=False, help="Visualize processing at every step")
     parser.add_argument("-m", "--intermediateRes", dest="intermediateRes", action="store_const", const=True, default=False, help="Store the intermediary results in the scene folder rather than on a temp location. Changed by Nera Nesic")
@@ -80,7 +89,11 @@ if __name__ == '__main__':
     parser.add_argument("-j", "--height", dest="height", default="12", help="The height of the calibration pattern used. Defaults to 12")
     
     #parser.add_argument("-c", "--code", dest="code", default="../codes/minSW.dat", help="The code file to use for decoding. Defaults to '../codes/minSW.dat' ")
+<<<<<<< HEAD
     parser.add_argument("-c", "--code", dest="code", default="/home/nnesic/public_html/VisionResearch/research2012/codes/minSW.dat", help="The code file to use for decoding. Changed by Nera Nesic.")
+=======
+    parser.add_argument("-c", "--code", dest="code", default="minSW.dat", help="The code file to use for decoding. Should be in same directory as script.")
+>>>>>>> c390d8ede73b2afd487d82ccfaf4661c89b0e917
 
     parser.add_argument("-t", "--certainty", dest="cert", default="115", help="The certainty threshold to use during thresholding. Defaults to 115.")
     
@@ -131,9 +144,22 @@ if __name__ == '__main__':
         tempdir = args.intermediatePlace
         p = re.compile("/\w*/$")
         t = p.findall(scenedir)
+<<<<<<< HEAD
         tempdir = tempdir +"" + t[0]
         safemkdirs(tempdir)    
         
+=======
+
+        # if can't use home2, or otherwise fails, use -m
+        try:
+            tempdir = tempdir +"" + t[0]
+            safemkdirs(tempdir)      
+        except:
+            print("* * * * * * * * ")
+            print("Error: Default temp directory didnt work. Storing temp files in scene directory.")
+            tempdir = scenedir
+            safemkdirs(tempdir) 
+>>>>>>> c390d8ede73b2afd487d82ccfaf4661c89b0e917
         
     
     if(args.query):
@@ -191,15 +217,21 @@ if __name__ == '__main__':
         leftDir = os.path.join(calibDir,"left/*.JPG")
         rightDir = os.path.join(calibDir,"right/*.JPG")
 
-        #check for images in leftDir and rightDir
+        #check for images in leftDir and rightDir (this could be done for other steps too)
         leftIms = glob.glob(leftDir)
         rightIms = glob.glob(rightDir)
+<<<<<<< HEAD
         if leftIms != rightIms:
             print("Left and right calibration folders do not contain same number of images.\n")
+=======
+        if len(leftIms) != len(rightIms):
+            print("Error: Left and right calibration folders do not contain same number of images.\n")
+>>>>>>> c390d8ede73b2afd487d82ccfaf4661c89b0e917
             exit(0)
         while (leftIms == 0 or rightIms == 0):
             print("No JPG images found in calibration folders...")
             subdirs = os.listdir(leftIms)
+<<<<<<< HEAD
         	for thing in subdirs:
                 if os.path.isdir(os.path.join(leftIms, thing))
                     print("Subdirectory " + thing + " found. Searching for images within this subdirectory.")
@@ -211,6 +243,15 @@ if __name__ == '__main__':
         leftDir = os.path.join(calibDir,"left/*")
         rightDir = os.path.join(calibDir,"right/*")
 >>>>>>> ykitajima
+=======
+            for thing in subdirs:
+		        if (os.path.isdir(os.path.join(leftIms, thing))):
+		            print("Subdirectory " + thing + " found. Searching for images within this subdirectory.")
+		            os.path.join(leftIms, thing)
+		            os.path.join(rightIms, thing)
+									
+	    contin = raw_input()
+>>>>>>> c390d8ede73b2afd487d82ccfaf4661c89b0e917
         
         w = args.width
         h = args.height
@@ -221,7 +262,7 @@ if __name__ == '__main__':
             h = raw_input("Pattern height?")
         config['PatternWidth'] = w
         config['PatternHeight'] = h
-        execute("ActiveLighting4 calibrate 0 "+w+" "+h+" "+confidenceDir+" "+leftDir+" "+rightDir)
+        execute("ActiveLighting/ActiveLighting4 calibrate 0 "+w+" "+h+" "+confidenceDir+" "+leftDir+" "+rightDir)
         
         answer = ""
         if(args.auto):
@@ -254,11 +295,11 @@ if __name__ == '__main__':
                 confidenceDir = os.path.join(rectifiedDir,"P"+`(int(match.group(3))+2*(int(match.group(1))-1))`+"/exp"+match.group(2))
                 outLeft = confidenceDir+"/left"
                 safemkdirs(outLeft)
-                execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*")
+                execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*")
                 
                 outRight = confidenceDir+"/right"
                 safemkdirs(outRight)
-                execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*")
+                execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*")
                     
         
         
@@ -310,25 +351,43 @@ if __name__ == '__main__':
         safemkdirs(outLeft)
         safemkdirs(outRight)
 <<<<<<< HEAD
+<<<<<<< HEAD
         execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambient/L*/left/*.JPG"))
         execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambient/L*/right/*.JPG"))
         
         #rectify ambient with ball images if exist
-    if(os.path.exists(os.path.join(scenedir,"orig/ambientBall"))):
-        rectambwbdir = os.path.join(scenedir,"computed/rectifiedAmbientBall") 
-        safemkdirs(rectambwbdir)
-        outLeft = rectambwbdir+"/left"
-        outRight = rectambwbdir+"/right"
-        safemkdirs(outLeft)
-        safemkdirs(outRight)
-        execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientBall/L*/left/*.JPG"))
-        execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientBall/L*/right/*.JPG"))
-    else:
-	    print("No ambient ball images found, continuing")
+        if(os.path.exists(os.path.join(scenedir,"orig/ambientBall"))):
+            rectambwbdir = os.path.join(scenedir,"computed/rectifiedAmbientBall") 
+            safemkdirs(rectambwbdir)
+            outLeft = rectambwbdir+"/left"
+            outRight = rectambwbdir+"/right"
+            safemkdirs(outLeft)
+            safemkdirs(outRight)
+            execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientBall/L*/left/*.JPG"))
+            execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientBall/L*/right/*.JPG"))
+        else:
+	        print("No ambient ball images found, continuing")
 =======
         execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientBall/L*/left/*.JPG"))
         execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientBall/L*/right/*.JPG"))
 >>>>>>> ykitajima
+=======
+        execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambient/L*/left/*.JPG"))
+        execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambient/L*/right/*.JPG"))
+        
+        #rectify ambient with ball images if exist
+	if(os.path.exists(os.path.join(scenedir,"orig/ambientBall"))):
+		rectambwbdir = os.path.join(scenedir,"computed/rectifiedAmbientBall") 
+		safemkdirs(rectambwbdir)
+		outLeft = rectambwbdir+"/left"
+		outRight = rectambwbdir+"/right"
+		safemkdirs(outLeft)
+		safemkdirs(outRight)
+		execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientBall/L*/left/*.JPG"))
+		execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientBall/L*/right/*.JPG"))
+	else:
+		print("No ambient ball images found, continuing")
+>>>>>>> c390d8ede73b2afd487d82ccfaf4661c89b0e917
         
         #rectify perturbed ambient images if exist
         #for some scenes, we do not have this. In summer 2012, Classroom1 and Garage secen have this folder.
@@ -339,8 +398,8 @@ if __name__ == '__main__':
             outRight = rectambodir+"/right"
             safemkdirs(outLeft)
             safemkdirs(outRight)
-            execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/left/*.JPG"))
-            execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/right/*.JPG"))
+            execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/left/*.JPG"))
+            execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/right/*.JPG"))
         
         answer = ""
         if(args.auto):
@@ -366,9 +425,7 @@ if __name__ == '__main__':
             dirs = folder.split("/")
             outputDir = confidenceDir+"/"+dirs[len(dirs)-3]+"/"+dirs[len(dirs)-2]+"/"+dirs[len(dirs)-1]
             safemkdirs(outputDir)
-            execute("ActiveLighting4 confidence "+outputDir+" "+folder+"/*")
-        
-        
+            execute("ActiveLighting/ActiveLighting4 confidence "+outputDir+" "+folder+"/*")
         
         answer = ""
         if(args.auto):
@@ -402,14 +459,13 @@ if __name__ == '__main__':
             exposures = glob.glob(proj+"/*")
             numPhotos = len(glob.glob(exposures[0]+"/left/*"))
             
-            
-            
+           
             for i in range(0,numPhotos):
                 photos = []
                 for e in exposures:
                     photos.append(glob.glob(e+"/left/*")[i])
                 
-                cmd = "ActiveLighting4 threshold "+outLeft+"/"+os.path.split(photos[0])[1]+" "+cert+" "
+                cmd = "ActiveLighting/ActiveLighting4 threshold "+outLeft+"/"+os.path.split(photos[0])[1]+" "+cert+" "
                 for p in photos:
                     cmd += p+" "
                 execute(cmd)
@@ -419,7 +475,7 @@ if __name__ == '__main__':
                 for e in exposures:
                     photos.append(glob.glob(e+"/right/*")[i])
                 
-                cmd = "ActiveLighting4 threshold "+outRight+"/"+os.path.split(photos[0])[1]+" "+cert+" "
+                cmd = "ActiveLighting/ActiveLighting4 threshold "+outRight+"/"+os.path.split(photos[0])[1]+" "+cert+" "
                 for p in photos:
                     cmd += p+" "
                 execute(cmd)
@@ -459,14 +515,14 @@ if __name__ == '__main__':
             
             phs = glob.glob(dir+"/left/*")
             naturalsort(phs)
-            cmd = "ActiveLighting4 decode "+outLeft+" "+codefile
+            cmd = "ActiveLighting/ActiveLighting4 decode "+outLeft+" "+codefile
             for p in phs:
                 cmd += " "+p
             execute(cmd)
             
             phs = glob.glob(dir+"/right/*")
             naturalsort(phs)
-            cmd = "ActiveLighting4 decode "+outRight+" "+codefile
+            cmd = "ActiveLighting/ActiveLighting4 decode "+outRight+" "+codefile
             for p in phs:
                 cmd += " "+p
             execute(cmd)
@@ -519,7 +575,7 @@ if __name__ == '__main__':
             outputdir = dispDir+"/"+os.path.split(dir)[1]
             safemkdirs(outputdir)
             if not args.visonly:
-                execute("ActiveLighting4 disparity "+outputdir+" "+dir+"/left/result.flo "+dir+"/right/result.flo "+xmin+" "+xmax+" "+ymin+" "+ymax)
+                execute("ActiveLighting/ActiveLighting4 disparity "+outputdir+" "+dir+"/left/result.flo "+dir+"/right/result.flo "+xmin+" "+xmax+" "+ymin+" "+ymax)
             VisColor(outputdir, "Xout0.flo", "out0Colorx.ppm", "out0Colory.ppm")
             VisGrey(outputdir, "Xout0.flo", "out0Greyx.pgm", "out0Greyy.pgm", reverse = True)
             
@@ -577,14 +633,14 @@ if __name__ == '__main__':
             outRight = outputdir+"/"+projector+"cam1.flo"
             safemkdirs(outputdir)
             if not args.visonly:
-                execute("ActiveLighting4 reproject "+outLeft+" "+dir+"/Xout0.flo "+codeDir+"/"+projector+"/left/result.flo"+edges)
-            execute("FloVis "+outLeft+" "+outputdir+"/"+projector+"cam0.ppm")
-            execute("FloVis -g "+outLeft+" "+outputdir+"/"+projector+"cam0.pgm")
+                execute("ActiveLighting/ActiveLighting4 reproject "+outLeft+" "+dir+"/Xout0.flo "+codeDir+"/"+projector+"/left/result.flo"+edges)
+            execute("FloVis/FloVis "+outLeft+" "+outputdir+"/"+projector+"cam0.ppm")
+            execute("FloVis/FloVis -g "+outLeft+" "+outputdir+"/"+projector+"cam0.pgm")
             VisColor(outputdir, projector+"cam0.flo", projector+"cam0x.ppm", projector+"cam0y.ppm")
             VisGrey(outputdir, projector+"cam0.flo", projector+"cam0x.pgm", projector+"cam0y.pgm", reverse = True)
             
             if not args.visonly:
-                execute("ActiveLighting4 reproject "+outRight+" "+dir+"/Xout1.flo "+codeDir+"/"+projector+"/right/result.flo"+edges)
+                execute("ActiveLighting/ActiveLighting4 reproject "+outRight+" "+dir+"/Xout1.flo "+codeDir+"/"+projector+"/right/result.flo"+edges)
             VisColor(outputdir, projector+"cam1.flo", projector+"cam1x.ppm", projector+"cam1y.ppm")
             VisGrey(outputdir, projector+"cam1.flo", projector+"cam1x.pgm", projector+"cam1y.pgm")
             
@@ -628,13 +684,13 @@ if __name__ == '__main__':
             mL += " "+r+"/"+os.path.split(r)[1]+"cam0.flo"
             mR += " "+r+"/"+os.path.split(r)[1]+"cam1.flo"
             
-        cmd = "ActiveLighting4 merge "+gs+" "
+        cmd = "ActiveLighting/ActiveLighting4 merge "+gs+" "
         if not args.visonly:
             execute(cmd+mL)
         VisColor(mergeDir, "left.flo", "leftx.ppm", "lefty.ppm")
         VisGrey(mergeDir, "left.flo", "leftx.pgm", "lefty.pgm", reverse = True)
         
-        cmd = "ActiveLighting4 merge "+gs+" "
+        cmd = "ActiveLighting/ActiveLighting4 merge "+gs+" "
         if not args.visonly:
             execute(cmd+mR)
         VisColor(mergeDir, "right.flo", "rightx.ppm", "righty.ppm")
