@@ -388,8 +388,7 @@ if __name__ == '__main__':
             exposures = glob.glob(proj+"/*")
             numPhotos = len(glob.glob(exposures[0]+"/left/*"))
             
-            
-            
+           
             for i in range(0,numPhotos):
                 photos = []
                 for e in exposures:
