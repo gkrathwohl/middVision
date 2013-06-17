@@ -56,6 +56,7 @@ def execute(cmd):
     os.system(cmd)
     
 def VisColor(dir, input, outputx, outputy, speed="10"):
+    
     execute("FloVis/FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
 
 def VisGrey(dir, input,outputx, outputy, reverse = False):
