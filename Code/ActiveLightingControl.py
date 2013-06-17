@@ -392,7 +392,6 @@ if __name__ == '__main__':
                     cmd += p+" "
                 execute(cmd)
             
-                
         
         answer = ""
         if(args.auto):
