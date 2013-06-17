@@ -13,11 +13,8 @@ Edited on 2012.8.3
 Original Author: wwestlin
 Edited Author: Xi Wang
 
-
-Edited 2013 Authors: Greg & York
-Last edit: 
 '''
-from sys import exit
+
 import sys
 import os
 import glob
@@ -83,7 +80,7 @@ if __name__ == '__main__':
     parser.add_argument("-j", "--height", dest="height", default="12", help="The height of the calibration pattern used. Defaults to 12")
     
     #parser.add_argument("-c", "--code", dest="code", default="../codes/minSW.dat", help="The code file to use for decoding. Defaults to '../codes/minSW.dat' ")
-    parser.add_argument("-c", "--code", dest="code", default="minSW.dat", help="The code file to use for decoding. Changed by Nera Nesic.")
+    parser.add_argument("-c", "--code", dest="code", default="/home/nnesic/public_html/VisionResearch/research2012/codes/minSW.dat", help="The code file to use for decoding. Changed by Nera Nesic.")
 
     parser.add_argument("-t", "--certainty", dest="cert", default="115", help="The certainty threshold to use during thresholding. Defaults to 115.")
     
@@ -118,33 +115,25 @@ if __name__ == '__main__':
     if args.visonly:
         if step != "merge" and step != "reproject":
             step = "disparity"
-
-    if(not os.path.exists(args.targetScene[0])):
-        print "Target directory does not exist"
-        exit()
     scenedir = args.targetScene[0]
-
+    if(not os.path.exists(scenedir)):
+        print "Target directory does not exist"
+	exit(0)
     if(not scenedir[len(scenedir)-1] == '/'):
         scenedir += '/'
         
     #temporary directory for intermediary results  
     if (args.intermediateRes):
-        tempdir = scenedir       
+        tempdir = scenedir
     else:
         #here we set home2 as place for intermediary results.
         #For more information, see Active Lighting 2012 Instruction 
-        tempdir = args.intermediatePlace          
+        tempdir = args.intermediatePlace
         p = re.compile("/\w*/$")
         t = p.findall(scenedir)
-
-        # if can't use home2, or otherwise fails, use -m
-        if len(t) == 0:
-            print("Default temp directory didnt work. Storing temp files in scene directory.")
-            tempdir = scenedir
-        else:
-            tempdir = tempdir +"" + t[0]
-            safemkdirs(tempdir)        
-
+        tempdir = tempdir +"" + t[0]
+        safemkdirs(tempdir)    
+        
         
     
     if(args.query):
@@ -198,6 +187,7 @@ if __name__ == '__main__':
         #confidenceDir = os.path.join(scenedir,"computed/calibration")
         confidenceDir = os.path.join(scenedir,"computed/calibration/left2right")
         safemkdirs(confidenceDir)
+<<<<<<< HEAD
         leftDir = os.path.join(calibDir,"left/*.JPG")
         rightDir = os.path.join(calibDir,"right/*.JPG")
 
@@ -217,6 +207,10 @@ if __name__ == '__main__':
                     os.path.join(rightIms, thing)
 									
         contin = raw_input()
+=======
+        leftDir = os.path.join(calibDir,"left/*")
+        rightDir = os.path.join(calibDir,"right/*")
+>>>>>>> ykitajima
         
         w = args.width
         h = args.height
@@ -283,35 +277,58 @@ if __name__ == '__main__':
 
 
     while(step == "rectifyambient"):
-
         #read .xml files
         intrinsics = [os.path.join(scenedir,"computed/calibration/left2right/Intrinsicsleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Intrinsicsright.xml")]
         distortion = [os.path.join(scenedir,"computed/calibration/left2right/Distortionleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Distortionright.xml")]
         rotation = [os.path.join(scenedir,"computed/calibration/left2right/Rotationleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Rotationright.xml")]
         projection = [os.path.join(scenedir,"computed/calibration/left2right/Projectionleft.xml"), os.path.join(scenedir,"computed/calibration/left2right/Projectionright.xml")]
         
-        #rectify ambient images
+        #rectify ambient images Edited on June 12, 2013 by York Kitajima
         rectambdir = os.path.join(scenedir,"computed/rectifiedAmbient")
+        photoDirs = glob.glob(os.path.join(scenedir, "orig/ambient/*"))
         safemkdirs(rectambdir)
-        outLeft = rectambdir+"/left"
-        outRight = rectambdir+"/right"
-        safemkdirs(outLeft)
-        safemkdirs(outRight)
-        execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambient/L*/left/*.JPG"))
-        execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambient/L*/right/*.JPG"))
+        for dir in photoDirs:
+            print dir
+            match = re.match(".*L([0-9]+)",dir)
+            if match:
+                lightingdir = os.path.join(rectambdir, "L"+match.group(1))
+                outLeft = lightingdir+"/left"
+                safemkdirs(outLeft)
+                execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*.JPG")
+
+                outRight = lightingdir+"/right"
+                safemkdirs(outRight)
+                execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*.JPG")
         
-        #rectify ambient with ball images if exist
-    if(os.path.exists(os.path.join(scenedir,"orig/ambientBall"))):
+
+
+        #rectify ambient with ball images
         rectambwbdir = os.path.join(scenedir,"computed/rectifiedAmbientBall") 
         safemkdirs(rectambwbdir)
         outLeft = rectambwbdir+"/left"
         outRight = rectambwbdir+"/right"
         safemkdirs(outLeft)
         safemkdirs(outRight)
+<<<<<<< HEAD
+        execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambient/L*/left/*.JPG"))
+        execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambient/L*/right/*.JPG"))
+        
+        #rectify ambient with ball images if exist
+        if(os.path.exists(os.path.join(scenedir,"orig/ambientBall"))):
+            rectambwbdir = os.path.join(scenedir,"computed/rectifiedAmbientBall") 
+            safemkdirs(rectambwbdir)
+            outLeft = rectambwbdir+"/left"
+            outRight = rectambwbdir+"/right"
+            safemkdirs(outLeft)
+            safemkdirs(outRight)
+            execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientBall/L*/left/*.JPG"))
+            execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientBall/L*/right/*.JPG"))
+        else:
+	        print("No ambient ball images found, continuing")
+=======
         execute("ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientBall/L*/left/*.JPG"))
         execute("ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientBall/L*/right/*.JPG"))
-    else:
-	    print("No ambient ball images found, continuing")
+>>>>>>> ykitajima
         
         #rectify perturbed ambient images if exist
         #for some scenes, we do not have this. In summer 2012, Classroom1 and Garage secen have this folder.
@@ -438,7 +455,7 @@ if __name__ == '__main__':
             
             codefile = args.code
             if(codefile == None):
-                codefile = raw_input("No code file")
+                codefile = raw_input("Code file?")
             
             phs = glob.glob(dir+"/left/*")
             naturalsort(phs)
