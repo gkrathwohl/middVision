@@ -336,8 +336,6 @@ if __name__ == '__main__':
             safemkdirs(outputDir)
             execute("ActiveLighting/ActiveLighting4 confidence "+outputDir+" "+folder+"/*")
         
-        
-        
         answer = ""
         if(args.auto):
             step = "threshold"
