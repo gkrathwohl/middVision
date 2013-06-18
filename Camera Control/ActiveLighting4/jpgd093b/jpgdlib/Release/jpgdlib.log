@@ -1,0 +1,57 @@
+﻿Build started 7/18/2011 2:09:35 PM.
+     1>Project "C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\jpgdlib\jpgdlib.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Release\jpgdlib.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\inc /Zi /nologo- /W3 /WX- /O2 /Ob1 /Oy- /D NDEBUG /D WIN32 /D _WINDOWS /D _USE_NON_INTEL_COMPILER /D _VC80_UPGRADE=0x0600 /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release\\" /Fd".\Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt h2v2.cpp idct.cpp jidctfst.cpp jpegdecoder.cpp
+         Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 16.00.30319.01 for 80x86
+         Copyright (C) Microsoft Corporation.  All rights reserved.
+         
+         cl /c /I..\inc /Zi /nologo- /W3 /WX- /O2 /Ob1 /Oy- /D NDEBUG /D WIN32 /D _WINDOWS /D _USE_NON_INTEL_COMPILER /D _VC80_UPGRADE=0x0600 /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Release\\" /Fd".\Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt h2v2.cpp idct.cpp jidctfst.cpp jpegdecoder.cpp
+     1>cl : Command line warning D9035: option 'nologo-' has been deprecated and will be removed in a future release
+         
+         h2v2.cpp
+     1>C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\inc\jpegdecoder.h(277): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+         idct.cpp
+     1>C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\inc\jpegdecoder.h(277): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+     1>idct.cpp(137): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(138): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(139): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(140): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(141): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(142): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(143): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(144): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(158): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(224): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(228): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(232): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(236): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(240): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(244): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(248): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>idct.cpp(252): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+         jidctfst.cpp
+     1>C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\inc\jpegdecoder.h(277): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+         jpegdecoder.cpp
+     1>C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\inc\jpegdecoder.h(277): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+         Generating Code...
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(1151,5): warning MSB8012: TargetPath(C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\jpgdlib\.\Release\jpgdlib.lib) does not match the Library's OutputFile property value (C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\lib\jpgdlib.lib). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+       Lib:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"..\lib\jpgdlib.lib" /NOLOGO .\Release\h2v2.obj
+         .\Release\idct.obj
+         .\Release\jidctfst.obj
+         .\Release\jpegdecoder.obj
+         jpgdlib.vcxproj -> C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\jpgdlib\.\Release\jpgdlib.lib
+       FinalizeBuildStatus:
+         Deleting file ".\Release\jpgdlib.unsuccessfulbuild".
+         Touching ".\Release\jpgdlib.lastbuildstate".
+     1>Done Building Project "C:\Users\nnesic\Desktop\ActiveLighting_2\jpgd03b\jpgdlib\jpgdlib.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.29

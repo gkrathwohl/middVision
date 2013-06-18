@@ -1,0 +1,10 @@
+sceneName			MacLab
+exposure 1			10
+exposure 2			2
+exposure 3			0.8
+exposure 4			1/10
+aperture			14
+projectors			2
+
+Additional information: 
+
