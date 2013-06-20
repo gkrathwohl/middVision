@@ -247,12 +247,12 @@ int main(int argc, char** argv){
 						}
 
 						uchar r,g,b;
-
 						
 						HSVtoRGB(hue,bright,1,&r,&g,&b);
-						int rr = r;
-						int gg = g;
-						int bb = b;
+
+						//int rr = r;
+						//int gg = g;
+						//int bb = b;
 
 						//if (valy == 0) {
 							//printf("rgb: %d,%d, %d \n", rr, gg, bb);
@@ -265,9 +265,51 @@ int main(int argc, char** argv){
 
 					}
 
+					
 
 
 
+
+			}
+		}
+
+		//Draw Legend
+		int ninth = sh.height/9;
+		int valy = -4;
+		int i, j;
+		for(j = 0; j < sh.height; j++){
+
+			if (fmod(j,ninth) == 0 && j != 0)
+					valy++;
+
+			for(i = 0; i < 50; i++){
+				speed = 5;
+
+				
+
+				//brightness scales from 0.25 to 0.75 across image
+				float bright = ((valy-min)/(max-min))*0.9+0.1; 
+				bright = std::min(bright, (float)0.75);
+				bright = std::max(bright, (float)0.25);
+
+				float hue = fmod(valy,speed)/speed;
+
+				if(hue < 0){
+					hue += 1;
+				}
+
+				if(hue == 1){
+					hue -= 0.001;
+				}
+
+				uchar r,g,b;
+				
+				HSVtoRGB(hue,bright,1,&r,&g,&b);
+
+				//BGR, not RGB
+				outputY.Pixel(i,j,0) = b;
+				outputY.Pixel(i,j,1) = g;
+				outputY.Pixel(i,j,2) = r;
 			}
 		}
 
