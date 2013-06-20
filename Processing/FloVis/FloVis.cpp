@@ -274,7 +274,7 @@ int main(int argc, char** argv){
 		}
 
 		//Draw Legend
-		int ninth = sh.height/9;
+		/*int ninth = sh.height/9;
 		int valy = -4;
 		int i, j;
 		for(j = 0; j < sh.height; j++){
@@ -311,7 +311,7 @@ int main(int argc, char** argv){
 				outputY.Pixel(i,j,1) = g;
 				outputY.Pixel(i,j,2) = r;
 			}
-		}
+		}*/
 
 		WriteImageVerb(output, argv[argIndex++], 1);
 		if(argIndex < argc)
