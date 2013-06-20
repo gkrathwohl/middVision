@@ -13,13 +13,7 @@ Edited on 2012.8.3
 Original Author: wwestlin
 Edited Author: Xi Wang
 
-<<<<<<< HEAD
-=======
-
 Edited 2013 Authors: Greg & York
-
-
->>>>>>> c390d8ede73b2afd487d82ccfaf4661c89b0e917
 '''
 
 import sys

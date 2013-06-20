@@ -1,0 +1,18 @@
+sceneName			ninth2013b
+exposure			10
+exposure			1
+exposure 			1/10
+AMBexposure 			8
+AMBexposure			4
+AMBexposure 			2
+AMBexposure 			1
+AMBexposure 			0.5
+AMBexposure 			1/4
+AMBexposure 			1/8
+AMBexposure			1/15
+aperture			14
+projectors			2
+
+
+Additional information: 
+

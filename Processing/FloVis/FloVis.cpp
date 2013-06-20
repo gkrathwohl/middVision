@@ -54,7 +54,7 @@ int main(int argc, char** argv){
 	float min = 9999;
 
 	int argIndex = 1;
-	int speed = 10;
+	int speed = 5;
 	int grey = 0;
 	int reverse = 0;
 
@@ -199,14 +199,12 @@ int main(int argc, char** argv){
 
 					if(valx != NOMATCH){
 
-						//ORIGINAL COMMENT: brightness scales from 0.25 to 0.75 across image
-						//this isn't true. if valx == max, bright = 1*.9 + .1 = 1  If valx = min, bright = .1. So it ranges from .1 to 1. 
+						//brightness scales from 0.25 to 0.75 across image
 						float bright = ((valx -min)/(max-min))*0.9+0.1; 
 						bright = std::min(bright, (float)0.75);
 						bright = std::max(bright, (float)0.25);
-						float mod = fmod(valx,speed);
-
-						float hue = mod/speed;
+						
+						float hue = fmod(valx,speed)/speed;
 
 						if(hue < 0){
 							hue += 1;
@@ -220,21 +218,25 @@ int main(int argc, char** argv){
 
 						HSVtoRGB(hue,bright,1,&r,&g,&b);
 
-						output.Pixel(i,j,0) = r;
-						output.Pixel(i,j,1) = g;
-						output.Pixel(i,j,2) = b;
+						int rr = r;
+						int gg = g;
+						int bb = b;
+
+						output.Pixel(i,j,0) = b;  
+						output.Pixel(i,j,1) = g; 
+						output.Pixel(i,j,2) = r;   
 					}
 
 					if(valy != NOMATCH){
 
+						speed = 5;
 
-						float bright = ((valy -min)/(max-min))*0.9+0.1; //brightness scales from 0.25 to 0.75 across image
-
+						//brightness scales from 0.25 to 0.75 across image
+						float bright = ((valy -min)/(max-min))*0.9+0.1; 
 						bright = std::min(bright, (float)0.75);
 						bright = std::max(bright, (float)0.25);
-						float mod = fmod(valy,speed);
 
-						float hue = mod/speed;
+						float hue = fmod(valy,speed)/speed;
 
 						if(hue < 0){
 							hue += 1;
@@ -246,11 +248,21 @@ int main(int argc, char** argv){
 
 						uchar r,g,b;
 
+						
 						HSVtoRGB(hue,bright,1,&r,&g,&b);
+						int rr = r;
+						int gg = g;
+						int bb = b;
 
-						outputY.Pixel(i,j,0) = r;
+						//if (valy == 0) {
+							//printf("rgb: %d,%d, %d \n", rr, gg, bb);
+						//}		 
+
+						//BGR, not RGB
+						outputY.Pixel(i,j,0) = b;
 						outputY.Pixel(i,j,1) = g;
-						outputY.Pixel(i,j,2) = b;
+						outputY.Pixel(i,j,2) = r;
+
 					}
 
 
