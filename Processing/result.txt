@@ -1,0 +1,6 @@
+Visualizing in greyscale
+
+ 
+ max: 1000.000000  min: -1000.000000 
+
+max: 176.000000 min: -85.000000 

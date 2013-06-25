@@ -140,6 +140,9 @@ for photo in rectball:
     convert(photo, dst+"/imgs/rectifiedAmbient/right/image-"+`index`+".s.jpg", size = "600x400")
     index += 1
 
+
+
+
 #write website
 mainfile = open(dst+"/index.php", "w")
 mainfile.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
@@ -157,6 +160,9 @@ var n;
 var nc=0;
 var a = false;
 var tab = true;
+
+
+
 
 function keyInput(e) {
 if (!e) var e = window.event;
@@ -285,7 +291,9 @@ showImg(Img1,Img2);
 }
 
 
-function showImg(x, y) {
+function showImg(x, y, note, showLegend) {
+ if(typeof(note)==='undefined') note = '';
+if(typeof(showLegend)==='undefined') showLegend = false;
 
 var expo=1;
 var li=1;
@@ -296,7 +304,7 @@ var p1 = images[0].split("/");
 var p2 = images[1].split("/");
 
 if (isNaN(n)==true || a==false){
-    document.getElementById('label1').innerHTML = p1[p1.length-1];
+    document.getElementById('label1').innerHTML = p1[p1.length-1] + "               " + note;
     document.getElementById('label2').innerHTML = p2[p2.length-1];
 }else{
     if(n<nrect){
@@ -306,10 +314,17 @@ if (isNaN(n)==true || a==false){
         expo=(n-nrect)%%exposure+1;
         li=Math.floor((n-nrect)/exposure)+1;
     }
-    document.getElementById('label1').innerHTML = p1[p1.length-1] +"; "+"exposure:  "+expo+", "+"light:  "+li;
+    document.getElementById('label1').innerHTML = p1[p1.length-1] +"; "+"exposure:  "+expo+", "+"light:  "+li + "               " + note;
     document.getElementById('label2').innerHTML = p2[p2.length-1] +"; "+"exposure:  "+expo+", "+"light:  "+li;
     
+    
 }
+if (showLegend){
+        document.getElementById('legend').style.visibility="visible";
+    }
+    else {
+         document.getElementById('legend').style.visibility="hidden"; 
+    }
 }
 
 
@@ -332,6 +347,7 @@ Hit the N/M or left/right arrow key to advance through all exposures.<br/>
 Hit the Z/X key to change to advance through all lighting conditions.
 Hit the B key to see the same image with ball. 
 Hit the T key to toggle left and right.
+
 </div>
 
 <div>
@@ -343,116 +359,122 @@ Hit the T key to toggle left and right.
 <span id = 'label2'></span></td>
 </tr></table>
 </td></tr></table>
-</div><h2>disparity<br/></h2>
-<p>
-Left   color   
-<a href="imgs/disparity/leftx.jpg"><img width = "50" src="imgs/disparity/leftx.s.jpg" onMouseOver="showImg('imgs/disparity/leftx.s.jpg','imgs/disparity/rightx.s.jpg')" alt=""></img></a>
-<a href="imgs/disparity/lefty.jpg"><img width = "50" src="imgs/disparity/lefty.s.jpg" onMouseOver="showImg('imgs/disparity/lefty.s.jpg','imgs/disparity/righty.s.jpg')" alt=""></img></a>
- grey 
-<a href="imgs/disparity/leftxg.jpg"><img width = "50" src="imgs/disparity/leftxg.s.jpg" onMouseOver="showImg('imgs/disparity/leftxg.s.jpg','imgs/disparity/rightxg.s.jpg')" alt=""></img></a>
-
-<br/>
-Right  color  
-<a href="imgs/disparity/rightx.jpg"><img width = "50" src="imgs/disparity/rightx.s.jpg" onMouseOver="showImg('imgs/disparity/leftx.s.jpg','imgs/disparity/rightx.s.jpg')" alt=""></img></a>
-<a href="imgs/disparity/righty.jpg"><img width = "50" src="imgs/disparity/righty.s.jpg" onMouseOver="showImg('imgs/disparity/lefty.s.jpg','imgs/disparity/righty.s.jpg')" alt=""></img></a>
- grey 
-<a href="imgs/disparity/rightxg.jpg"><img width = "50" src="imgs/disparity/rightxg.s.jpg" onMouseOver="showImg('imgs/disparity/leftxg.s.jpg','imgs/disparity/rightxg.s.jpg')" alt=""></img></a>
-<br/>
-</p>
-
-<h2>Rectified Ambient</h2>
-<table> 
- <tr> 
- <td align = "center"> <h3> Left </h3> </td> 
- <td align = "center"> <h3> Right </h3> </td> 
- </tr> 
+</div>
+<table cellspacing="3">
+<tr><td style="vertical-align:top" >
+<div id=legend>
+Y disparity legend: <br></br>
+<TABLE HEIGHT = "30" ALIGN = "right" cellspacing="0"><TBODY><TR>
+<td></td>
 """%(nrect,exposure))
 
+#Open the RGB codes
+f = open(src + '/computed/resultColor.txt', 'r')
+text = str(f.read())
+
+#looks for codes with regular expressions
+p = re.compile('valy: (-*\d) rgb: (\d+) (\d+) (\d+)')
+codes = p.findall(text) #[(valy, r, g, b,), (valy, r, g, b)...]
+
+#http://stackoverflow.com/questions/214359/converting-hex-color-to-rgb-and-vice-versa
+def rgb_to_hex(rgb):
+    return '#%02x%02x%02x' % rgb
+
+#the number of codes is determined by the txt output in FloVis
+for code in codes:
+    valy = int(code[0])
+    hexCol = rgb_to_hex((int(code[1]), int(code[2]), int(code[3])))
+    mainfile.write("""
+<TD bgcolor=%s width=25>%d</TD>"""%(hexCol, valy))
+
+mainfile.write("""
+</TR>
+  </TBODY>
+</TABLE><br></br></div>""")
+
+
+#Open grey disparity range
+g = open(src + '/computed/resultGrey.txt', 'r')
+textGrey = str(g.read())
+
+#look for range with reg ex
+q = re.compile('max: (-*\d+).*min: (-*\d+).*')
+greyRange = q.findall(textGrey)
+g1 = str(greyRange[0][0])
+g2 = str(greyRange[0][1])
+
+mainfile.write("""
+<h3 ALIGN="center">Disparity</h3>
+<div align="center">
+<a href="imgs/disparity/leftx.jpg"><img width = "50" src="imgs/disparity/leftx.s.jpg" onMouseOver="showImg('imgs/disparity/leftx.s.jpg','imgs/disparity/rightx.s.jpg')" alt=""></img></a><a href="imgs/disparity/rightx.jpg"><img width = "50" src="imgs/disparity/rightx.s.jpg" onMouseOver="showImg('imgs/disparity/leftx.s.jpg','imgs/disparity/rightx.s.jpg')" alt=""></img></a><br></br>
+
+<a href="imgs/disparity/leftxg.jpg"><img width = "50" src="imgs/disparity/leftxg.s.jpg" onMouseOver="showImg('imgs/disparity/leftxg.s.jpg','imgs/disparity/rightxg.s.jpg', 'Disparity Range  Max: %s Min: %s ')" alt=""></img></a><a href="imgs/disparity/rightxg.jpg"><img width = "50" src="imgs/disparity/rightxg.s.jpg" onMouseOver="showImg('imgs/disparity/leftxg.s.jpg','imgs/disparity/rightxg.s.jpg', 'Disparity Range  Max: %s Min: %s')" alt=""></img></a><br></br>
+<a href="imgs/disparity/lefty.jpg"><img width = "50" src="imgs/disparity/lefty.s.jpg" onMouseOver="showImg('imgs/disparity/lefty.s.jpg','imgs/disparity/righty.s.jpg', '', true)" alt=""></img></a><a href="imgs/disparity/righty.jpg"><img width = "50" src="imgs/disparity/righty.s.jpg" onMouseOver="showImg('imgs/disparity/lefty.s.jpg','imgs/disparity/righty.s.jpg', '', true)" alt=""></img></a>
+</div>
+</td><td><h3 ALIGN="center"> Ambient </h3>
+"""%(g1,g2,g1,g2))
+
 light = nrect/exposure
-for x in range (0,2):
-    mainfile.write("""<td> 
+
+mainfile.write("""
 <table> 
 <tr> 
 <td><br/><br/><br/></td> """)
-    for y in range (0,exposure):
-        y += 1
-        mainfile.write("""
-<td align = "center"> Exposure %d </td>"""%y)
+
+for y in range (0,exposure):
+    y += 1
     mainfile.write("""
-</tr> 
-    
-<tr> """)
-    if(x==0):        
-        for z in range (0,light):                
-            mainfile.write("""
-<td align = "center">Lighting %d<br/><br/></td>"""%(z+1))
-            for i in range (exposure*z,exposure*(z+1)):
-                mainfile.write("""
-<td align = "center"><a href="imgs/rectifiedAmbient/left/image-%d.jpg"><img width = "50" src="imgs/rectifiedAmbient/left/image-%d.s.jpg" onMouseOver="showImg('imgs/rectifiedAmbient/left/image-%d.s.jpg','imgs/rectifiedAmbient/right/image-%d.s.jpg')" alt=""></img></a></td>"""%(i,i,i,i))
-            mainfile.write("""</tr>
-""")
-        mainfile.write("""</table> 
-</td>
-""")
-    else:
-        for z in range (0,light):                
-            mainfile.write("""
-<td align = "center">Lighting %d<br/><br/></td>"""%(z+1))
-            for i in range (exposure*z,exposure*(z+1)):
-                mainfile.write("""
-<td align = "center"><a href="imgs/rectifiedAmbient/right/image-%d.jpg"><img width = "50" src="imgs/rectifiedAmbient/right/image-%d.s.jpg" onMouseOver="showImg('imgs/rectifiedAmbient/left/image-%d.s.jpg','imgs/rectifiedAmbient/right/image-%d.s.jpg')" alt=""></img></a></td>"""%(i,i,i,i))
-            mainfile.write("""</tr>
-""")
-        mainfile.write("""</table> 
-</td>    
-""")
+<td align = "center"> Exposure %d </td>"""%y)
 mainfile.write("""
 </tr> 
+    
+<tr> """)
+     
+for z in range (0,light):                
+    mainfile.write("""
+<td align = "center">Lighting %d<br/><br/></td>"""%(z+1))
+    for i in range (exposure*z,exposure*(z+1)):
+        mainfile.write("""
+<td align = "center"><a href="imgs/rectifiedAmbient/left/image-%d.jpg"><img width = "50" src="imgs/rectifiedAmbient/left/image-%d.s.jpg" onMouseOver="showImg('imgs/rectifiedAmbient/left/image-%d.s.jpg','imgs/rectifiedAmbient/right/image-%d.s.jpg')" alt=""></img></a></td>"""%(i,i,i,i))
+    mainfile.write("""</tr>
+""")
+mainfile.write("""</table>  <h3 ALIGN="center"> Ambient with Ball</h3> <table>""")
 
-<tr> 
- <td align = "center"> <h3> Left with Ball </h3> </td> 
- <td align = "center"> <h3> Right with Ball</h3> </td> 
-</tr>""")
-for x in range (0,2):
-    mainfile.write("""<td> 
+mainfile.write("""<td> 
 <table> 
 <tr> 
 <td><br/><br/><br/></td> """)
-    for y in range (0,exposure):
-        y += 1
-        mainfile.write("""
-<td align = "center"> Exposure %d </td>"""%y)
+for y in range (0,exposure):
+    y += 1
     mainfile.write("""
+<td align = "center"> Exposure %d </td>"""%y)
+mainfile.write("""
 </tr> 
     
 <tr> """)
-    if(x==0):        
-        for z in range (0,light):                
-            mainfile.write("""
+       
+for z in range (0,light):                
+    mainfile.write("""
 <td align = "center">Lighting %d<br/><br/></td>"""%(z+1))
-            for i in range (exposure*z,exposure*(z+1)):
-                mainfile.write("""
+    for i in range (exposure*z,exposure*(z+1)):
+        mainfile.write("""
 <td align = "center"><a href="imgs/rectifiedAmbient/left/image-%d.jpg"><img width = "50" src="imgs/rectifiedAmbient/left/image-%d.s.jpg" onMouseOver="showImg('imgs/rectifiedAmbient/left/image-%d.s.jpg','imgs/rectifiedAmbient/right/image-%d.s.jpg')" alt=""></img></a></td>"""%((i+nrect),(i+nrect),(i+nrect),(i+nrect)))
-            mainfile.write("""</tr>
+    mainfile.write("""</tr>
 """)
-        mainfile.write("""</table> 
+mainfile.write("""</table> 
 </td>
 """)
-    else:
-        for z in range (0,light):                
-            mainfile.write("""
-<td align = "center">Lighting %d<br/><br/></td>"""%(z+1))
-            for i in range (exposure*z,exposure*(z+1)):
-                mainfile.write("""
-<td align = "center"><a href="imgs/rectifiedAmbient/right/image-%d.jpg"><img width = "50" src="imgs/rectifiedAmbient/right/image-%d.s.jpg" onMouseOver="showImg('imgs/rectifiedAmbient/left/image-%d.s.jpg','imgs/rectifiedAmbient/right/image-%d.s.jpg')" alt=""></img></a></td>"""%((i+nrect),(i+nrect),(i+nrect),(i+nrect)))
-            mainfile.write("""</tr>
-""")
-        mainfile.write("""</table> 
-</td>    
-""")
 
-mainfile.write("""</tr> 
+mainfile.write("""
+</table> 
+</td>
+
+ """)
+    
+
+mainfile.write("""
 </table>
+</td></table>
 </div>
 """)
 print "Done with website built"

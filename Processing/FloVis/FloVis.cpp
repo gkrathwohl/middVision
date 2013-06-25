@@ -107,7 +107,7 @@ int main(int argc, char** argv){
 
 				val = input.Pixel(i,j,0);
 
-
+				
 
 				if(val > max && computemax){
 					max = val;
@@ -128,9 +128,14 @@ int main(int argc, char** argv){
 
 		CByteImage disp0(sh.width, sh.height, 1);
 		CByteImage disp1(sh.width, sh.height, 1);
-
+		printf("\n \n max: %f  min: %f \n\n", max, min);
+		//max = 176;
+		//min = -85; //-62
+		//fprintf(stdout, "max: %f min: %f \n", max, min);
 		float scale = 255.0 / (max - min);
 		float offs = - scale * min;
+		//offs = min;
+		//scale = 255.0 / (max - offs);
 		if(reverse == 1){
 			for(int i = 0; i < sh.width; i++){
 				for(int j = 0; j < sh.height; j++){
@@ -154,21 +159,15 @@ int main(int argc, char** argv){
 			for(int j = 0; j < sh.height; j++){
 
 				float valx, valy;
-
-					valx = input.Pixel(i,j,0);
-
-
-					valy = input.Pixel(i,j,1);
+				valx = input.Pixel(i,j,0);
+				valy = input.Pixel(i,j,1);
 
 				if(valx == NOMATCH){
 					disp0.Pixel(i,j,0) = 0;
-
 				}
 				if(valy == NOMATCH){
 					disp1.Pixel(i,j,0) = 0;
 				}
-
-
 			}
 		}
 
@@ -264,16 +263,36 @@ int main(int argc, char** argv){
 						outputY.Pixel(i,j,2) = r;
 
 					}
-
-					
-
-
-
-
 			}
 		}
 
-		//Draw Legend
+		//Output rbg for legend
+		int yRange = -6;  //legend will go from yRange (negative) to positive yRange
+		for (int valy = yRange; valy <= yRange * -1; valy ++) {
+			//brightness scales from 0.25 to 0.75 across image
+			float bright = ((valy-min)/(max-min))*0.9+0.1; 
+			bright = std::min(bright, (float)0.75);
+			bright = std::max(bright, (float)0.25);
+
+			float hue = fmod(valy,speed)/speed;
+
+			if(hue < 0){
+				hue += 1;
+			}
+
+			if(hue == 1){
+				hue -= 0.001;
+			}
+
+			uchar r,g,b;
+		
+			HSVtoRGB(hue,bright,1,&r,&g,&b);
+
+			fprintf(stdout, "valy: %d rgb: %d %d %d \n", valy, r, g, b);
+		}
+	
+		
+		//Draw Legend on image
 		/*int ninth = sh.height/9;
 		int valy = -4;
 		int i, j;

@@ -53,14 +53,15 @@ def execute(cmd):
     os.system(cmd)
     
 def VisColor(dir, input, outputx, outputy, speed="10"):
-    
-    execute("FloVis/FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+    txtDir = os.path.join(scenedir,"computed/");
+    execute("FloVis/FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultColor.txt")
 
 def VisGrey(dir, input,outputx, outputy, reverse = False):
+    txtDir = os.path.join(scenedir,"computed/");
     if(reverse):
-        execute("FloVis/FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+        execute("FloVis/FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultGrey.txt")
     else:
-        execute("FloVis/FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy)
+        execute("FloVis/FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultGrey.txt")
     
 def cleanExit(config, configpath):
     json.dump(config, open(configpath, 'w'), sort_keys=True, indent = 4 )
