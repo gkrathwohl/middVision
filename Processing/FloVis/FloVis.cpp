@@ -41,25 +41,32 @@ pair<CFloatImage, CFloatImage> splitFloImage(CFloatImage &merged){
 
 }
 
+int compare (const void * a, const void * b) {
+		return ( *(int*)a - *(int*)b );
+	}
+
 int main(int argc, char** argv){
 
 
 	if(argc < 3){
-		printf("Usage: ColorSpiral input.flo output.png <optional: outputY.png>\n Options: -s <SPEED>  -g <GREYSCALE> -x <GREYMAX> -i <GREYMIN>\n");
+		printf("Usage: ColorSpiral input.flo output.png <optional: outputY.png>\n Options: -s <SPEED>  -g <GREYSCALE> -x <GREYMAX> -i <GREYMIN> -m input2.flo \n");
 		exit(0);
 	}
 
-
 	float max = 0;
 	float min = 9999;
+	float maxy = 0;
+	float miny = 9999;
 
 	int argIndex = 1;
 	int speed = 5;
 	int grey = 0;
 	int reverse = 0;
+	int merge = 0;
 
 	int computemax = 1;
 	int computemin = 1;
+	CFloatImage input1;
 
 	while(argv[argIndex][0] == '-'){
 		if(argv[argIndex][1] == 's'){
@@ -82,7 +89,13 @@ int main(int argc, char** argv){
 		}else if(argv[argIndex][1] == 'r'){
 			reverse = 1;
 			argIndex++;
+		}else if(argv[argIndex][1] == 'm'){
+			merge = 1;
+			argIndex++;
+			
+	    	ReadFlowFile(input1, argv[argIndex++]);
 		}
+		
 	}
 
 
@@ -95,43 +108,74 @@ int main(int argc, char** argv){
 	}
 
 	CFloatImage input;
-
 	ReadFlowFile(input, argv[argIndex++]);
 
 	CShape sh = CShape(input.Shape().width, input.Shape().height, 3);
-	if(computemax || computemin){
+
+	if (merge == 1) {
+		printf("\n\n\n\n\n merging! \n\n\n");
+		for(int i = 0; i < sh.width; i++){
+			for(int j = 0; j < sh.height; j++){
+				if (input.Pixel(i,j,0) < -1000)
+					input.Pixel(i,j,0) = input1.Pixel(i,j,0);
+				else if (input1.Pixel(i,j,0) < -1000)
+					input.Pixel(i,j,0) = input.Pixel(i,j,0);
+				else
+					input.Pixel(i,j,0) = std::min(input1.Pixel(i,j,0), input.Pixel(i,j,0));
+			}
+		}
+	}
+
+	//WriteFlowFile(input1, "outFlo1.flo");
+	
+	//if(computemax || computemin){
 		for(int i = 0; i < sh.width; i++){
 			for(int j = 0; j < sh.height; j++){
 
 				float val;
-
 				val = input.Pixel(i,j,0);
 
-				
-
-				if(val > max && computemax){
+				if(val > max){
 					max = val;
 				}
 
-				if(val < min && computemin){
+				if(val < min && val > -9999){
 					min = val;
 				}
-
-
 			}
 		}
 
+	//}
+
+	//get new max and min values from 5th and 95th percentiles of values?
+	/*float vals[sh.width*sh.height];
+	float val;
+	for(int i = 0; i < sh.width; i++){
+		for(int j = 0; j < sh.height; j++){
+			val = input.Pixel(i,j,0);
+			vals[i+(j*sh.width)] = val;
+		}
 	}
 
-	if(grey){
+	
+	//qsort(vals, sh.width*sh.height, sizeof(float), compare);
 
+	//min = vals[(int)floor(.95*sh.width*sh.height)];
+	//max = vals[(int)floor(.05*sh.width*sh.height)];
+
+	printf("\n\n\n\n\n");
+	printf("min: %d max: %d", min, max);
+	printf("\n\n\n\n\n");
+	/////////////////////////////////////////////////
+*/
+	if(grey){
 
 		CByteImage disp0(sh.width, sh.height, 1);
 		CByteImage disp1(sh.width, sh.height, 1);
-		printf("\n \n max: %f  min: %f \n\n", max, min);
+		//printf("\n \n max: %f  min: %f \n\n", max, min);
 		//max = 176;
 		//min = -85; //-62
-		//fprintf(stdout, "max: %f min: %f \n", max, min);
+		fprintf(stdout, "max: %f min: %f \n", max, min);
 		float scale = 255.0 / (max - min);
 		float offs = - scale * min;
 		//offs = min;
@@ -190,85 +234,100 @@ int main(int argc, char** argv){
 
 				float valx, valy;
 
-					valx = input.Pixel(i,j,0);
+				valx = input.Pixel(i,j,0);
+				valy = input.Pixel(i,j,1);
 
+				//if (valy != floor(valy))
+					//fprintf(stdout, "non int y d: %f", valy);
 
-					valy = input.Pixel(i,j,1);
+				if(valx != NOMATCH){
 
+					//brightness scales from 0.25 to 0.75 across image
+					float bright = ((valx -min)/(max-min))*0.9+0.1; 
+					bright = std::min(bright, (float)0.75);
+					bright = std::max(bright, (float)0.25);
+					
+					float hue = fmod(valx,speed)/speed;
 
-					if(valx != NOMATCH){
-
-						//brightness scales from 0.25 to 0.75 across image
-						float bright = ((valx -min)/(max-min))*0.9+0.1; 
-						bright = std::min(bright, (float)0.75);
-						bright = std::max(bright, (float)0.25);
-						
-						float hue = fmod(valx,speed)/speed;
-
-						if(hue < 0){
-							hue += 1;
-						}
-
-						if(hue == 1){
-							hue -= 0.001;
-						}
-
-						uchar r,g,b;
-
-						HSVtoRGB(hue,bright,1,&r,&g,&b);
-
-						int rr = r;
-						int gg = g;
-						int bb = b;
-
-						output.Pixel(i,j,0) = b;  
-						output.Pixel(i,j,1) = g; 
-						output.Pixel(i,j,2) = r;   
+					if(hue < 0){
+						hue += 1;
 					}
 
-					if(valy != NOMATCH){
-
-						speed = 5;
-
-						//brightness scales from 0.25 to 0.75 across image
-						float bright = ((valy -min)/(max-min))*0.9+0.1; 
-						bright = std::min(bright, (float)0.75);
-						bright = std::max(bright, (float)0.25);
-
-						float hue = fmod(valy,speed)/speed;
-
-						if(hue < 0){
-							hue += 1;
-						}
-
-						if(hue == 1){
-							hue -= 0.001;
-						}
-
-						uchar r,g,b;
-						
-						HSVtoRGB(hue,bright,1,&r,&g,&b);
-
-						//int rr = r;
-						//int gg = g;
-						//int bb = b;
-
-						//if (valy == 0) {
-							//printf("rgb: %d,%d, %d \n", rr, gg, bb);
-						//}		 
-
-						//BGR, not RGB
-						outputY.Pixel(i,j,0) = b;
-						outputY.Pixel(i,j,1) = g;
-						outputY.Pixel(i,j,2) = r;
-
+					if(hue == 1){
+						hue -= 0.001;
 					}
+
+					uchar r,g,b;
+
+					HSVtoRGB(hue,bright,1,&r,&g,&b);
+
+					int rr = r;
+					int gg = g;
+					int bb = b;
+
+					output.Pixel(i,j,0) = b;  
+					output.Pixel(i,j,1) = g; 
+					output.Pixel(i,j,2) = r;   
+				}
+
+				if(valy != NOMATCH){
+
+					speed = 5;
+
+					//brightness scales from 0.25 to 0.75 across image
+					float bright = ((valy -min)/(max-min))*0.9+0.1; 
+					bright = std::min(bright, (float)0.75);
+					bright = std::max(bright, (float)0.25);
+
+					float hue = fmod(valy,speed)/speed;
+
+					if(hue < 0){
+						hue += 1;
+					}
+
+					if(hue == 1){
+						hue -= 0.001;
+					}
+
+					uchar r,g,b;
+					
+					HSVtoRGB(hue,bright,1,&r,&g,&b);
+
+					//int rr = r;
+					//int gg = g;
+					//int bb = b;
+
+					//if (valy == 0) {
+						//printf("rgb: %d,%d, %d \n", rr, gg, bb);
+					//}		 
+
+					//BGR, not RGB
+					outputY.Pixel(i,j,0) = b;
+					outputY.Pixel(i,j,1) = g;
+					outputY.Pixel(i,j,2) = r;
+
+				}
 			}
 		}
 
 		//Output rbg for legend
-		int yRange = -6;  //legend will go from yRange (negative) to positive yRange
-		for (int valy = yRange; valy <= yRange * -1; valy ++) {
+		for(int i = 0; i < sh.width; i++){
+			for(int j = 0; j < sh.height; j++){
+
+				float val1y;
+				val1y = input.Pixel(i,j,1);
+
+				if(val1y > maxy){
+					maxy = val1y;
+				}
+
+				if(val1y < miny){
+					miny = val1y;
+				}
+		}
+		}
+		int yRange = miny;  //legend will go from yRange (negative) to positive yRange
+		for (int valy = miny-1; valy <= maxy+1; valy ++) {
 			//brightness scales from 0.25 to 0.75 across image
 			float bright = ((valy-min)/(max-min))*0.9+0.1; 
 			bright = std::min(bright, (float)0.75);
@@ -289,6 +348,7 @@ int main(int argc, char** argv){
 			HSVtoRGB(hue,bright,1,&r,&g,&b);
 
 			fprintf(stdout, "valy: %d rgb: %d %d %d \n", valy, r, g, b);
+
 		}
 	
 		

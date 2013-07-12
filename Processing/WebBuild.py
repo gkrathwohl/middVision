@@ -88,7 +88,7 @@ convert(disparitydir+"righty.pgm", dst+"/imgs/disparity/rightyg.s.jpg", size="60
 print "Done with disparity"
 
 #this part is to get how many exposure there
-for t in range (0, 12):
+for t in range (0, 15):
     tempdir = src + "/computed/rectifiedAmbient/L"+str(t)+"/left"
     if(os.path.exists(tempdir)):
         globdir=glob.glob(tempdir+"/*.ppm")
