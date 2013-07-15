@@ -266,6 +266,7 @@ void calibrate(int pairsnum, int circles, char** left, char** right, int boardw,
 			object_points1, image_points1, point_counts1,
 			image_sz, intrinsic_matrix1, distortion_coeffs1, NULL, NULL, 0);
 
+	
 
 	cvCalibrateCamera2(
 			object_points2, image_points2, point_counts2,
