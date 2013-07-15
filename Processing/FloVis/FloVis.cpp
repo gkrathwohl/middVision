@@ -128,7 +128,7 @@ int main(int argc, char** argv){
 
 	//WriteFlowFile(input1, "outFlo1.flo");
 	
-	//if(computemax || computemin){
+	if(computemax || computemin){
 		for(int i = 0; i < sh.width; i++){
 			for(int j = 0; j < sh.height; j++){
 
@@ -145,9 +145,9 @@ int main(int argc, char** argv){
 			}
 		}
 
-	//}
+	}
 
-	//get new max and min values from 5th and 95th percentiles of values?
+	//get new max and min values from 5th and 95th percentiles of values (+15 ish)?
 	/*float vals[sh.width*sh.height];
 	float val;
 	for(int i = 0; i < sh.width; i++){
