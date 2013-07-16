@@ -446,14 +446,16 @@ if __name__ == '__main__':
             
             phs = glob.glob(dir+"/left/*")
             naturalsort(phs)
-            cmd = "ActiveLighting4 decode "+outLeft+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter
+            cmd = "ActiveLighting4 decode "+outLeft+" "+codefile
+           # cmd = "ActiveLighting4 decode "+outLeft+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter
             for p in phs:
                 cmd += " "+p
             execute(cmd)
             
             phs = glob.glob(dir+"/right/*")
             naturalsort(phs)
-            cmd = "ActiveLighting4 decode "+outRight+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter
+            cmd = "ActiveLighting4 decode "+outRight+" "+codefile
+           # cmd = "ActiveLighting4 decode "+outRight+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter
             for p in phs:
                 cmd += " "+p
             execute(cmd)

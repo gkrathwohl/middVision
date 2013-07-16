@@ -6,7 +6,6 @@
  */
 
 #include <cv.h>
-#include "opencv2/opencv.hpp"
 #include <highgui.h>
 
 
@@ -28,9 +27,12 @@ void getRefinedCorners(char* pic, CvPoint2D32f* corners, int* corner_count){
 
 
 	printf("%s\n",pic);
+
 	IplImage* image = cvLoadImage(pic);
+
 	image_sz = cvGetSize(image);
-	
+
+
 	int result = cvFindChessboardCorners(image, board_sz, corners,
 			corner_count,CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS | CV_CALIB_CB_FAST_CHECK);
 

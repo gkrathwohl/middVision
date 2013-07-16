@@ -242,6 +242,7 @@ int atoiSafe(char *s) {
 	return atoi(s);
 }
 
+
 int robustAverage(vector<int> nums, int maxdiff, int mingroup){
 	std::sort(nums.begin(), nums.end());
 	int stable =0;
@@ -281,10 +282,59 @@ int robustAverage(vector<int> nums, int maxdiff, int mingroup){
 
 
 }
+/*
+int robustAverage(vector<int> nums, int maxdiff, int mingroup){
+	std::sort(nums.begin(), nums.end());
+	int stable =0;
+	while((int)nums.size() != stable){
+		stable = nums.size();
+		int median = nums[nums.size()/2];
+		//int median = nums[0];
+		//maxdiff = 5;		
+		vector<int> close;
+		vector<int> far;
 
+		for(int i =0; i < (int)nums.size(); i++){
+			if(abs(nums[i] - median) <= maxdiff){
+				close.push_back(nums[i]);
+			}else{
+				far.push_back(nums[i]);
+			}
+		}
 
+		//if(close.size() >= far.size()){
+		//	nums = close;
+		//}else{
+		//	nums = far;
+		//}
 
+		if (close.size() >= far.size() && close[0] < far[0]){
+			nums = close;
+		}else if (close.size() < far.size() && close[0] > far[0]){
+			nums = far;
+		}else if (close.size() >= far.size() && close[0] > far[0]){
+			if (far.size() > mingroup)
+				nums = far;
+			else
+				nums = close;
+		}else{
+			if (close.size() > mingroup)
+				nums = close;
+			else
+				nums = far;
+		}
 
+	}
+	if((int)nums.size() < mingroup){
+		return NOMATCH;
+	}
+	int avg= 0;
+	for(int i =0; i < (int)nums.size(); i++){
+		avg += nums[i];
+	}
+	avg /= (int)nums.size();
+	return avg;
+}
 
 // utility for adding a black frame around a pgm image
 // has nothing to do with grey decode, but was used to
@@ -303,7 +353,7 @@ void addFrame(CByteImage result) {
 	}
 }
 
-
+*/
 
 CFloatImage mergeToFloImage(CFloatImage &x, CFloatImage &y){
 

@@ -42,19 +42,10 @@ Calibrate.d: ../Calibrate.cpp /home/wwestlin/opencv/include/opencv/cv.h \
  /home/wwestlin/opencv/include/opencv/opencv2/objdetect/objdetect.hpp \
  /home/wwestlin/opencv/include/opencv/opencv2/legacy/compat.hpp \
  /home/wwestlin/opencv/include/opencv/opencv2/core/internal.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/opencv.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/imgproc/imgproc.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/video/tracking.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/video/background_segm.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/objdetect/objdetect.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/calib3d/calib3d.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/ml/ml.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui_c.h \
- /home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui.hpp \
- /home/wwestlin/opencv/include/opencv/opencv2/contrib/contrib.hpp \
  /home/wwestlin/opencv/include/opencv/highgui.h \
  /home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui_c.h \
- /home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui.hpp
+ /home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui.hpp \
+ /home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui_c.h
 
 /home/wwestlin/opencv/include/opencv/cv.h:
 
@@ -144,28 +135,10 @@ Calibrate.d: ../Calibrate.cpp /home/wwestlin/opencv/include/opencv/cv.h \
 
 /home/wwestlin/opencv/include/opencv/opencv2/core/internal.hpp:
 
-/home/wwestlin/opencv/include/opencv/opencv2/opencv.hpp:
-
-/home/wwestlin/opencv/include/opencv/opencv2/imgproc/imgproc.hpp:
-
-/home/wwestlin/opencv/include/opencv/opencv2/video/tracking.hpp:
-
-/home/wwestlin/opencv/include/opencv/opencv2/video/background_segm.hpp:
-
-/home/wwestlin/opencv/include/opencv/opencv2/objdetect/objdetect.hpp:
-
-/home/wwestlin/opencv/include/opencv/opencv2/calib3d/calib3d.hpp:
-
-/home/wwestlin/opencv/include/opencv/opencv2/ml/ml.hpp:
-
-/home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui_c.h:
-
-/home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui.hpp:
-
-/home/wwestlin/opencv/include/opencv/opencv2/contrib/contrib.hpp:
-
 /home/wwestlin/opencv/include/opencv/highgui.h:
 
 /home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui_c.h:
 
 /home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui.hpp:
+
+/home/wwestlin/opencv/include/opencv/opencv2/highgui/highgui_c.h:

@@ -14,8 +14,8 @@ program, and those can be used instead.
 
 It is possible to access certain functions by pressing the following keys:
 
-
-		B - Takes an ambient shot with all the cameras, and all the exposures.
+		A - Takes an ambient shot with all the cameras, and all the exposures.
+		B - Takes an ambient shot with ball with all the cameras, and all the exposures.
 		C - Opens the Multi Live view window, and pops a message box. When the message box is 
 			closed, a calibration picture is taken.
 		D - Decodes all the takes of the current scene not decoded yet, and highlights in green 

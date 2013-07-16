@@ -29,7 +29,7 @@ using namespace std;
 void greyThresh(char* outdir, char **imList, int numIm);
 
 // decode images (defined in GreyDecode.cpp)
-CFloatImage greyDecode(char* outdir, char* codefile, int direction, char **imList, int numIm);
+CFloatImage greyDecode(char* outdir, char* codefile, int direction, int rad, int maxDiff, int useFilter, int eraseForeground, char **imList, int numIm);
 
 // combine multiple confidence maps into one (defined in GreyThresh.cpp)				
 void combineConfidence(char *outfile, char **imList, int numIm, int certain);
@@ -150,19 +150,23 @@ int main(int argc, char* argv[])
 
 
 		if(modestr.compare("decode") == 0){
-			if (argc < 5)
+			if (argc < 8)
 				throw CError("usage: ActiveLighting4 decode outdir codefile im0 [im1 ...]    <vertical patterns first, then horizontal>");
 			{
 
 				// decode images
 				char* outdir = argv[2];
 				char* codefile = argv[3];
-				char **imList = &argv[4];
-				assert((argc-4)/2 % 2 == 0);
-				int numIm = (argc-4) / 2;
-				CFloatImage x = greyDecode(outdir, codefile, 0, imList, numIm);
-				imList = &argv[4+numIm];
-				CFloatImage y = greyDecode(outdir, codefile, 1, imList, numIm);
+				int rad = atoi(argv[4]);
+				int maxDiff = atoi(argv[5]);
+				int useFilter = atoi(argv[6]);
+				int eraseForeground = atoi(argv[7]);
+				char **imList = &argv[8];
+				assert((argc-8)/2 % 2 == 0);
+				int numIm = (argc-8) / 2;
+				CFloatImage x = greyDecode(outdir, codefile, 0, rad, maxDiff, useFilter, eraseForeground, imList, numIm);
+				imList = &argv[8+numIm];
+				CFloatImage y = greyDecode(outdir, codefile, 1, rad, maxDiff, useFilter, eraseForeground, imList, numIm);
 
 				CFloatImage merged = mergeToFloImage(x,y);
 				char filename[1024];

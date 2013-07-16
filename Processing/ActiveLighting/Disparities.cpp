@@ -102,7 +102,7 @@ void matchImages(CFloatImage fim0, CFloatImage fim1, CFloatImage dim, int direct
 	for(int j = 0; j < h; j++){
 		float* row = &fim0.Pixel(0,j,0);
 		float* disparityRow = &dim.Pixel(0,j,0);
-		if (j % 100 == 0) printf(" :) ");
+		if (j % 100 == 0) printf(":) ");
 		fflush(stdout);
 		for(int i = 0; i < 2*w; i+= 2){
 
@@ -203,7 +203,7 @@ void computeDisparities(char *outdir,  char *in0, char *in1, int dXmin, int dXma
 	WriteFlowFile(crossed0, filename);
 	sprintf(filename, "%s/Xout1.flo",outdir);
 	WriteFlowFile(crossed1, filename);
-	puts("hi");
+//	puts("hi");
 
 	if(1){
 		//Compute greyscale disparity maps, for checking
@@ -213,13 +213,14 @@ void computeDisparities(char *outdir,  char *in0, char *in1, int dXmin, int dXma
 
 
 		float scale = 255.0 / (dmax - dmin);
-		float offs = -scale * dmin;
+		float offs = - scale * dmin;
 
 		CFloatImage d0s = splitFloImage(d0).first;
 		CFloatImage d1s = splitFloImage(d1).first;
 
-		ScaleAndOffset(d0s, disp0, -scale, offs);
-		ScaleAndOffset(d1s, disp1,  scale, offs);
+		ScaleAndOffset(d0s, disp0, scale, offs);
+		ScaleAndOffset(d1s, disp1, scale, offs);
+
 
 
 		sprintf(filename, "%s/out0.pgm",outdir);

@@ -387,6 +387,78 @@ void fval2byte(CFloatImage fval, CByteImage result, int mode)
 }
 
 
+//Surveys the image and finds pixels that are too bright compared to other
+//pixels around them and changes them to UNK
+void filter(CIntImage val, int radius, int maxDiff) 
+{
+    CShape sh = val.Shape();
+    int w = sh.width, h = sh.height, nB = sh.nBands;
+    CIntImage tmp;
+    CShape sh2(w, h, nB);
+    tmp.ReAllocate(sh2);
+    
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            int r0 = val.Pixel(x, y, 0);
+            if (r0 != 0) {
+                int cnt = 0;
+                int avg = 0;
+                int unk = 0;
+                int total = 0;
+                for (int px = x-radius; px <= x+radius; px++) {
+                    for (int py = y-radius; py <= y+radius; py++) {
+                        if (px >= 0 && py >= 0 && px < w && py < h) {
+                            if (px == x && py == y){
+                                continue;
+                            }
+                            else {
+                                if (val.Pixel(px, py, 0) == UNK) {
+                                    unk++;
+                                }
+                                else {
+                                    total = total+val.Pixel(px, py, 0);
+                                }
+                                cnt++;
+                            }
+                        }
+                    }
+                }
+                int denom = abs(cnt-unk);
+                if (denom != 0)
+                    avg = total/denom;
+                else 
+                    avg = total/cnt;
+                if (abs(avg-r0) > maxDiff)
+                    tmp.Pixel(x, y, 0) = UNK; 
+                else
+                    tmp.Pixel(x, y, 0) = r0;
+            }	
+        }
+    }
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            val.Pixel(x, y, 0) = tmp.Pixel(x, y, 0);
+        }
+    }
+}
+
+void eraseForeground(CFloatImage fval, CByteImage mask) 
+{
+	CShape sh = fval.Shape();
+    int w = sh.width, h = sh.height, nB = sh.nBands;
+	CShape sh2 = mask.Shape();
+	int w2 = sh2.width, h2 = sh2.height;
+	if (w == w2 && h == h2){
+		for (int y = 0; y < h; y++) {
+        	for (int x = 0; x < w; x++) {
+				if (mask.Pixel(x, y, 0) == 255)
+					fval.Pixel(x, y, 0) == UNK;
+			}
+		}
+	}
+}
+
+
 
 // Decode images.  if direction==0, code goes (mainly) in x direction, otherwise in y-direction
 // 1. combine all numIm thresholded images into CIntImages val and unk
@@ -395,7 +467,7 @@ void fval2byte(CFloatImage fval, CByteImage result, int mode)
 // 4. refine code values into float values fval
 // 5. save fval CFloatImage
 // 6. save .pgm file that contains grey-level encoding of refined code values
-CFloatImage greyDecode(char* outdir, char* codefile, int direction, char **imList, int numIm)
+CFloatImage greyDecode(char* outdir, char* codefile, int direction, int rad, int maxDiff, int useFilter, int eraseForeground, char **imList, int numIm)
 {
     CByteImage im;
     CShape sh;
@@ -429,6 +501,16 @@ CFloatImage greyDecode(char* outdir, char* codefile, int direction, char **imLis
 	decodeGrey(val, unk);
 
 
+	//2.5 filter val
+	if (useFilter == 0) {
+		printf("Filtering image\n");
+		filter(val, rad, maxDiff);
+	}
+	if (useFilter == 1) {
+		printf("NOT filtering image\n");
+	}
+
+
 
 	if (1) { // save val as pgm
 		fprintf(stderr, "saving val as pgm - ");
@@ -454,6 +536,9 @@ CFloatImage greyDecode(char* outdir, char* codefile, int direction, char **imLis
 
 	}
 
+
+
+
 	if (1) { // save filled val as pgm
 		fprintf(stderr, "saving val as pgm - ");
 		CByteImage result;
@@ -471,6 +556,13 @@ CFloatImage greyDecode(char* outdir, char* codefile, int direction, char **imLis
 		refineCodes(val, fval, radius, direction);
 
 
+	//4.5  Erase foreground pixels
+	if (eraseForeground == 1) {
+		//eraseForeground(fval, );	
+		//printf("Erasing foreground pixels from background-only images.");
+	}
+
+
 	// 5. save fval
 	fprintf(stderr, "writing as float (pmf) image - ");
 	sprintf(filename, "%s/result%d.pmf", outdir,direction);
@@ -485,6 +577,7 @@ CFloatImage greyDecode(char* outdir, char* codefile, int direction, char **imLis
 		sprintf(filename, "%s/cresult%d.ppm", outdir,direction);
 		WriteImageVerb(result, filename, verbose);
 	}
+
 
 
 	// 6. save .pgm file that contains grey-level encoding of refined code values
