@@ -1,0 +1,147 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (8763e89b).
+//
+// c:\users\gkrathwohl\desktop\activelighting2012\activelighting4\debug\ahscript.tlh
+//
+// C++ source equivalent of Win32 type library X10.ActiveHome
+// compiler-generated file created 05/28/13 at 15:03:54 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+namespace ActiveHomeScriptLib {
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("001000af-1def-0010-10b6-dc5ba692c858"))
+/* LIBID */ __ActiveHomeScriptLib;
+struct __declspec(uuid("001000af-3def-0912-10b6-dc5ba692c858"))
+/* interface */ _IActiveHomeEvents;
+struct __declspec(uuid("001000af-3def-0911-10b6-dc5ba692c858"))
+/* dispinterface */ _DIActiveHomeEvents;
+struct /* coclass */ ActiveHome;
+struct __declspec(uuid("001000af-3def-0910-10b6-dc5ba692c858"))
+/* dual interface */ IActiveHome;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(_IActiveHomeEvents, __uuidof(_IActiveHomeEvents));
+_COM_SMARTPTR_TYPEDEF(_DIActiveHomeEvents, __uuidof(_DIActiveHomeEvents));
+_COM_SMARTPTR_TYPEDEF(IActiveHome, __uuidof(IActiveHome));
+
+//
+// Type library items
+//
+
+struct __declspec(uuid("001000af-3def-0912-10b6-dc5ba692c858"))
+_IActiveHomeEvents : IUnknown
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    HRESULT RecvAction (
+        const _variant_t & bszAction,
+        const _variant_t & bszParm1,
+        const _variant_t & bszParm2,
+        const _variant_t & bszParm3,
+        const _variant_t & bszParm4,
+        const _variant_t & bszParm5,
+        const _variant_t & bszReserved );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_RecvAction (
+        /*[in]*/ VARIANT bszAction,
+        /*[in]*/ VARIANT bszParm1,
+        /*[in]*/ VARIANT bszParm2,
+        /*[in]*/ VARIANT bszParm3,
+        /*[in]*/ VARIANT bszParm4,
+        /*[in]*/ VARIANT bszParm5,
+        /*[in]*/ VARIANT bszReserved ) = 0;
+};
+
+struct __declspec(uuid("001000af-3def-0911-10b6-dc5ba692c858"))
+_DIActiveHomeEvents : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    HRESULT RecvAction (
+        const _variant_t & bszAction,
+        const _variant_t & bszParm1,
+        const _variant_t & bszParm2,
+        const _variant_t & bszParm3,
+        const _variant_t & bszParm4,
+        const _variant_t & bszParm5,
+        const _variant_t & bszReserved );
+};
+
+struct __declspec(uuid("001000af-2def-0208-10b6-dc5ba692c858"))
+ActiveHome;
+    // [ default ] interface IActiveHome
+    // [ default, source ] dispinterface _DIActiveHomeEvents
+    // [ source ] interface _IActiveHomeEvents
+
+struct __declspec(uuid("001000af-3def-0910-10b6-dc5ba692c858"))
+IActiveHome : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(put=PutOnRecvAction))
+    IDispatchPtr OnRecvAction;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    _variant_t SendAction (
+        const _variant_t & bszAction,
+        const _variant_t & bstrParam,
+        const _variant_t & vReserved1,
+        const _variant_t & vReserved2 );
+    void PutOnRecvAction (
+        IDispatch * _arg1 );
+    HRESULT EnumerateInterfaces (
+        VARIANT * pCount );
+    HRESULT GetInterfaceName (
+        VARIANT * pInterfaceName );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_SendAction (
+        /*[in]*/ VARIANT bszAction,
+        /*[in]*/ VARIANT bstrParam,
+        /*[in]*/ VARIANT vReserved1,
+        /*[in]*/ VARIANT vReserved2,
+        /*[out,retval]*/ VARIANT * vReturn ) = 0;
+      virtual HRESULT __stdcall put_OnRecvAction (
+        /*[in]*/ IDispatch * _arg1 ) = 0;
+      virtual HRESULT __stdcall raw_EnumerateInterfaces (
+        /*[in,out]*/ VARIANT * pCount ) = 0;
+      virtual HRESULT __stdcall raw_GetInterfaceName (
+        /*[in,out]*/ VARIANT * pInterfaceName ) = 0;
+};
+
+//
+// Wrapper method implementations
+//
+
+#include "c:\users\gkrathwohl\desktop\activelighting2012\activelighting4\debug\ahscript.tli"
+
+} // namespace ActiveHomeScriptLib
+
+#pragma pack(pop)

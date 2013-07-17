@@ -1,0 +1,17 @@
+﻿Build started 6/17/2013 11:31:27 AM.
+     1>Project "C:\Users\gkrathwohl\Desktop\ActiveLighting2012\ActiveLighting4\ActiveLighting_2011.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\ActiveLighting_2011.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         All outputs are up-to-date.
+         ActiveLighting_2011.vcxproj -> C:\Users\gkrathwohl\Desktop\ActiveLighting2012\ActiveLighting4\Debug\ActiveLighting_2011.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\ActiveLighting_2011.unsuccessfulbuild".
+         Touching "Debug\ActiveLighting_2011.lastbuildstate".
+     1>Done Building Project "C:\Users\gkrathwohl\Desktop\ActiveLighting2012\ActiveLighting4\ActiveLighting_2011.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.13
