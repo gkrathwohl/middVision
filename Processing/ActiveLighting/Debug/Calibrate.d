@@ -42,10 +42,19 @@ Calibrate.d: ../Calibrate.cpp opencv/include/opencv/cv.h \
  opencv/include/opencv/opencv2/objdetect/objdetect.hpp \
  opencv/include/opencv/opencv2/legacy/compat.hpp \
  opencv/include/opencv/opencv2/core/internal.hpp \
- opencv/include/opencv/highgui.h \
+ opencv/include/opencv/opencv2/opencv.hpp \
+ opencv/include/opencv/opencv2/imgproc/imgproc.hpp \
+ opencv/include/opencv/opencv2/video/tracking.hpp \
+ opencv/include/opencv/opencv2/video/background_segm.hpp \
+ opencv/include/opencv/opencv2/objdetect/objdetect.hpp \
+ opencv/include/opencv/opencv2/calib3d/calib3d.hpp \
+ opencv/include/opencv/opencv2/ml/ml.hpp \
  opencv/include/opencv/opencv2/highgui/highgui_c.h \
  opencv/include/opencv/opencv2/highgui/highgui.hpp \
- opencv/include/opencv/opencv2/highgui/highgui_c.h
+ opencv/include/opencv/opencv2/contrib/contrib.hpp \
+ opencv/include/opencv/highgui.h \
+ opencv/include/opencv/opencv2/highgui/highgui_c.h \
+ opencv/include/opencv/opencv2/highgui/highgui.hpp
 
 opencv/include/opencv/cv.h:
 
@@ -135,10 +144,28 @@ opencv/include/opencv/opencv2/legacy/compat.hpp:
 
 opencv/include/opencv/opencv2/core/internal.hpp:
 
-opencv/include/opencv/highgui.h:
+opencv/include/opencv/opencv2/opencv.hpp:
+
+opencv/include/opencv/opencv2/imgproc/imgproc.hpp:
+
+opencv/include/opencv/opencv2/video/tracking.hpp:
+
+opencv/include/opencv/opencv2/video/background_segm.hpp:
+
+opencv/include/opencv/opencv2/objdetect/objdetect.hpp:
+
+opencv/include/opencv/opencv2/calib3d/calib3d.hpp:
+
+opencv/include/opencv/opencv2/ml/ml.hpp:
 
 opencv/include/opencv/opencv2/highgui/highgui_c.h:
 
 opencv/include/opencv/opencv2/highgui/highgui.hpp:
 
+opencv/include/opencv/opencv2/contrib/contrib.hpp:
+
+opencv/include/opencv/highgui.h:
+
 opencv/include/opencv/opencv2/highgui/highgui_c.h:
+
+opencv/include/opencv/opencv2/highgui/highgui.hpp:
