@@ -442,22 +442,22 @@ void filter(CIntImage val, int radius, int maxDiff)
     }
 }
 
-void eraseForeground(CFloatImage fval, CByteImage mask) 
+//erases foreground object from fval
+void foregroundErase(CFloatImage fval, CByteImage mask) 
 {
 	CShape sh = fval.Shape();
-    int w = sh.width, h = sh.height, nB = sh.nBands;
+    int w = sh.width, h = sh.height;
 	CShape sh2 = mask.Shape();
 	int w2 = sh2.width, h2 = sh2.height;
 	if (w == w2 && h == h2){
 		for (int y = 0; y < h; y++) {
         	for (int x = 0; x < w; x++) {
-				if (mask.Pixel(x, y, 0) == 255)
-					fval.Pixel(x, y, 0) == UNK;
+				if (mask.Pixel(x, y, 0) == 0)
+					fval.Pixel(x, y, 0) = UNK;
 			}
 		}
 	}
 }
-
 
 
 // Decode images.  if direction==0, code goes (mainly) in x direction, otherwise in y-direction
@@ -467,7 +467,7 @@ void eraseForeground(CFloatImage fval, CByteImage mask)
 // 4. refine code values into float values fval
 // 5. save fval CFloatImage
 // 6. save .pgm file that contains grey-level encoding of refined code values
-CFloatImage greyDecode(char* outdir, char* codefile, int direction, int rad, int maxDiff, int useFilter, int eraseForeground, char **imList, int numIm)
+CFloatImage greyDecode(char* outdir, char* codefile, int direction, int rad, int maxDiff, int useFilter, int eraseForeground, char* maskdir, char **imList, int numIm)
 {
     CByteImage im;
     CShape sh;
@@ -532,8 +532,6 @@ CFloatImage greyDecode(char* outdir, char* codefile, int direction, int rad, int
 		fillCodeHoles(val, maxwidth, maxborderdiff, 1-direction);
 		maxborderdiff = 2;
 		fillCodeHoles(val, maxwidth, maxborderdiff, direction);
-
-
 	}
 
 
@@ -558,8 +556,10 @@ CFloatImage greyDecode(char* outdir, char* codefile, int direction, int rad, int
 
 	//4.5  Erase foreground pixels
 	if (eraseForeground == 1) {
-		//eraseForeground(fval, );	
-		//printf("Erasing foreground pixels from background-only images.");
+		printf("Erasing foreground pixels from background-only images\n");
+        CByteImage mask;
+        ReadImageVerb(mask, maskdir, verbose);
+		foregroundErase(fval, mask);	
 	}
 
 
