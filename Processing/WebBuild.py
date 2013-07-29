@@ -63,6 +63,16 @@ dst = removeTrailingSlash(dst)
 safemkdirs(dst+"/imgs")
 scenename = os.path.split(src)[1]
 
+#convert warp images
+warpdir = src+"/computed/warp/"
+safemkdirs(dst+"/imgs/warp")
+
+convert(warpdir+"left.ppm", dst+"/imgs/warp/left.jpg")
+convert(warpdir+"right.ppm", dst+"/imgs/warp/right.jpg")
+convert(warpdir+"right-warped-inv-to-left.png", dst+"/imgs/warp/R2Linv.jpg")
+convert(warpdir+"left-warped-inv-to-right.png", dst+"/imgs/warp/L2Rinv.jpg")
+convert(warpdir+"left-warped-fwd-to-right.png", dst+"/imgs/warp/L2Rfwd.jpg")
+convert(warpdir+"right-warped-inv-to-left.png", dst+"/imgs/warp/R2Lfwd.jpg")
 
 #change disparity
 disparitydir = src+"/computed/disparity/"
@@ -400,8 +410,9 @@ textGrey = str(g.read())
 #look for range with reg ex
 q = re.compile('max: (-*\d+).*min: (-*\d+).*')
 greyRange = q.findall(textGrey)
-g1 = str(greyRange[0][0])
-g2 = str(greyRange[0][1])
+if len(greyRange) > 0:
+    g1 = str(greyRange[0][0])
+    g2 = str(greyRange[0][1])
 
 mainfile.write("""
 <h3 ALIGN="center">Disparity</h3>
@@ -474,7 +485,10 @@ mainfile.write("""
 
 mainfile.write("""
 </table>
-</td></table>
-</div>
+</td></table> Warp:
+</div><a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/R2Linv.jpg','imgs/warp/left.jpg')">Right to left inv</a>
+</div><a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/L2Rinv.jpg','imgs/warp/right.jpg')">Left to right inv</a>
+</div><a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/L2Rfwd.jpg','imgs/warp/right.jpg')">Left to right fwd</a>
+</div><a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/R2Lfwd.jpg','imgs/warp/left.jpg')">Left to right fwd</a>
 """)
 print "Done with website built"

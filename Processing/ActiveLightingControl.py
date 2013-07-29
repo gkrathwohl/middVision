@@ -14,6 +14,7 @@ Original Author: wwestlin
 Edited Author: Xi Wang
 
 Edited 2013 Authors: Greg & York
+We have added checking features that give more precise error messages, the foreground detection feature, and handling the rectified images with ball
 '''
 
 import sys
@@ -108,6 +109,10 @@ if __name__ == '__main__':
     parser.add_argument("-pc","--previousconfig", dest="prevconfig", action="store_const", const=True, default=False, help="Load the last used configuration from config.txt and re-use it. Overrides any other options")
     parser.add_argument("-pv","--previousvis", dest="prevvis", action="store_const", const=True, default=False, help="Load the last used vmin and vmax from config.txt")
     parser.add_argument("-pd","--prevVisAsDispSearch", dest="prevdisp", action="store_const", const=True, default=False, help="Load the last used vmin and vmax from config.txt and use it as xmin and xmax for the disparity search range")
+    parser.add_argument("-rd", "--rad", dest="rad", default="4", help="Radius for filtering used in decoding step. Defaults to 4.")
+    parser.add_argument("-md", "--maxDiff", dest="maxDiff", default="100", help="Max Difference allowed for pixels to be filtered. Used in decoding step. Defaults to 100.") 
+    parser.add_argument("-f", "--filter", dest="filter", action= "store_const", const = True, default=False, help="Determines whether to use filter or not during decode. Defaults to False.")
+    parser.add_argument("-fg", "--foreground", dest="foreg", action="store_const", const = True, default=False, help="Combines greycode with and without foreground object. The greycode without foreground object must be stored in 'foreground' folder instead of greycode. The foreground object must be specified with the detection technique. See manual for details.")
     
     
     args = parser.parse_args(sys.argv[1:])
@@ -147,7 +152,8 @@ if __name__ == '__main__':
             tempdir = scenedir
             safemkdirs(tempdir) 
         
-    
+    backDir = os.path.join(scenedir,"computed/background")    
+
     if(args.query):
         args.xmin = None
         args.xmax = None
@@ -228,7 +234,7 @@ if __name__ == '__main__':
             h = raw_input("Pattern height?")
         config['PatternWidth'] = w
         config['PatternHeight'] = h
-        execute("ActiveLighting/ActiveLighting4 calibrate 0 "+w+" "+h+" "+confidenceDir+" "+leftDir+" "+rightDir)
+        execute("ActiveLighting/Debug/ActiveLighting4 calibrate 0 "+w+" "+h+" "+confidenceDir+" "+leftDir+" "+rightDir)
         
         answer = ""
         if(args.auto):
@@ -261,13 +267,26 @@ if __name__ == '__main__':
                 confidenceDir = os.path.join(rectifiedDir,"P"+`(int(match.group(3))+2*(int(match.group(1))-1))`+"/exp"+match.group(2))
                 outLeft = confidenceDir+"/left"
                 safemkdirs(outLeft)
-                execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*")
+                execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*")
                 
                 outRight = confidenceDir+"/right"
                 safemkdirs(outRight)
-                execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*")
+                execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*")
                     
-        
+        if (args.foreg):
+            photoDirs = glob.glob(os.path.join(scenedir, "orig/backgroundGreycode/*"))
+            rectforeDir = os.path.join(backDir, "rectified")
+            safemkdirs(rectforeDir)
+            for dir in photoDirs:
+                if match:
+                    confidenceDir = os.path.join(rectforeDir,"P"+`(int(match.group(3))+2*(int(match.group(1))-1))`+"/exp"+match.group(2))
+                    outLeft = confidenceDir+"/left"
+                    safemkdirs(outLeft)
+                    execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*")
+                
+                    outRight = confidenceDir+"/right"
+                    safemkdirs(outRight)
+                    execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*")
         
         answer = ""
         if(args.auto):
@@ -301,11 +320,11 @@ if __name__ == '__main__':
                 lightingdir = os.path.join(rectambdir, "L"+match.group(1))
                 outLeft = lightingdir+"/left"
                 safemkdirs(outLeft)
-                execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*.JPG")
+                execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*.JPG")
 
                 outRight = lightingdir+"/right"
                 safemkdirs(outRight)
-                execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*.JPG")
+                execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*.JPG")
         
 
         #rectify ambient with ball images if exist
@@ -320,11 +339,11 @@ if __name__ == '__main__':
                     lightingdir = os.path.join(rectambwbdir, "L"+match.group(1))
                     outLeft = lightingdir+"/left"
                     safemkdirs(outLeft)
-                    execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*.JPG")
+                    execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+dir+"/left/*.JPG")
 
                     outRight = lightingdir+"/right"
                     safemkdirs(outRight)
-                    execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*.JPG")
+                    execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+dir+"/right/*.JPG")
         
 
         else:
@@ -332,7 +351,7 @@ if __name__ == '__main__':
 
         
         #rectify perturbed ambient images if exist
-        #for some scenes, we do not have this. In summer 2012, Classroom1 and Garage secen have this folder.
+        #for some scenes, we do not have this. In summer 2012, Classroom1 and Garage scenes have this folder.
         if(os.path.exists(os.path.join(scenedir,"orig/ambientOccluders"))):
             rectambodir = os.path.join(scenedir,"computed/rectifiedAmbientOccluders") 
             safemkdirs(rectambodir)
@@ -340,8 +359,18 @@ if __name__ == '__main__':
             outRight = rectambodir+"/right"
             safemkdirs(outLeft)
             safemkdirs(outRight)
-            execute("ActiveLighting/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/left/*.JPG"))
-            execute("ActiveLighting/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/right/*.JPG"))
+            execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/left/*.JPG"))
+            execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientOccluders/L*/right/*.JPG"))
+
+        if(args.foreg):
+            rectdetectDir = os.path.join(backDir,"rectifiedDetection")
+            safemkdirs(rectdetectDir)
+            outLeft = rectdetectDir+"/left"
+            outRight = rectdetectDir+"/right"
+            safemkdirs(outLeft)
+            safemkdirs(outRight)
+            execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outLeft+" "+intrinsics[0]+" "+distortion[0]+" "+rotation[0]+" "+projection[0]+" "+os.path.join(scenedir,"orig/ambientDetection/L*/left/*.JPG"))
+            execute("ActiveLighting/Debug/ActiveLighting4 rectify "+outRight+" "+intrinsics[1]+" "+distortion[1]+" "+rotation[1]+" "+projection[1]+" "+os.path.join(scenedir,"orig/ambientDetection/L*/right/*.JPG"))
         
         answer = ""
         if(args.auto):
@@ -367,8 +396,20 @@ if __name__ == '__main__':
             dirs = folder.split("/")
             outputDir = confidenceDir+"/"+dirs[len(dirs)-3]+"/"+dirs[len(dirs)-2]+"/"+dirs[len(dirs)-1]
             safemkdirs(outputDir)
-            execute("ActiveLighting/ActiveLighting4 confidence "+outputDir+" "+folder+"/*")
+            execute("ActiveLighting/Debug/ActiveLighting4 confidence "+outputDir+" "+folder+"/*")
         
+        if(args.foreg):
+            confidenceDir = os.path.join(backDir, "confidence")
+            safemkdirs(confidenceDir)
+
+            photoFolders = glob.glob(os.path.join(backDir,"rectified")+"/*/*/*")
+            
+            for folder in photoFolders:
+                dirs = folder.split("/")
+                outputDir = confidenceDir+"/"+dirs[len(dirs)-3]+"/"+dirs[len(dirs)-2]+"/"+dirs[len(dirs)-1]
+                safemkdirs(outputDir)
+                execute("ActiveLighting/Debug/ActiveLighting4 confidence "+outputDir+" "+folder+"/*")
+            
         answer = ""
         if(args.auto):
             step = "threshold"
@@ -407,7 +448,7 @@ if __name__ == '__main__':
                 for e in exposures:
                     photos.append(glob.glob(e+"/left/*")[i])
                 
-                cmd = "ActiveLighting/ActiveLighting4 threshold "+outLeft+"/"+os.path.split(photos[0])[1]+" "+cert+" "
+                cmd = "ActiveLighting/Debug/ActiveLighting4 threshold "+outLeft+"/"+os.path.split(photos[0])[1]+" "+cert+" "
                 for p in photos:
                     cmd += p+" "
                 execute(cmd)
@@ -417,12 +458,46 @@ if __name__ == '__main__':
                 for e in exposures:
                     photos.append(glob.glob(e+"/right/*")[i])
                 
-                cmd = "ActiveLighting/ActiveLighting4 threshold "+outRight+"/"+os.path.split(photos[0])[1]+" "+cert+" "
+                cmd = "ActiveLighting/Debug/ActiveLighting4 threshold "+outRight+"/"+os.path.split(photos[0])[1]+" "+cert+" "
                 for p in photos:
                     cmd += p+" "
                 execute(cmd)
             
+        if(args.foreg):
+            thresholdDir = os.path.join(backDir, "threshold")
+            safemkdirs(thresholdDir)
+            projectorFolders = glob.glob(os.path.join(backDir, "confidence")+"/*")
+
+            for proj in projectorFolders:
+                projDir = thresholdDir+"/"+os.path.split(proj)[1]
+                outLeft = projDir+"/left"
+                outRight = projDir+"/right"
+                safemkdirs(outLeft)
+                safemkdirs(outRight)
+                exposures = glob.glob(proj+"/*")
+                numPhotos = len(glob.glob(exposures[0]+"/left/*"))
+            
+           
+                for i in range(0,numPhotos):
+                    photos = []
+                    for e in exposures:
+                        photos.append(glob.glob(e+"/left/*")[i])
                 
+                    cmd = "ActiveLighting/Debug/ActiveLighting4 threshold "+outLeft+"/"+os.path.split(photos[0])[1]+" "+cert+" "
+                    for p in photos:
+                        cmd += p+" "
+                    execute(cmd)
+                
+                
+                    photos = []
+                    for e in exposures:
+                        photos.append(glob.glob(e+"/right/*")[i])
+                
+                    cmd = "ActiveLighting/Debug/ActiveLighting4 threshold "+outRight+"/"+os.path.split(photos[0])[1]+" "+cert+" "
+                    for p in photos:
+                        cmd += p+" "
+                    execute(cmd)
+
         
         answer = ""
         if(args.auto):
@@ -440,8 +515,26 @@ if __name__ == '__main__':
     while(step == "decode"):
         decodeDir = os.path.join(tempdir,"computed/decode")
         safemkdirs(decodeDir)
+        
+        eraseForeground = '0'
      
-     
+        rad = args.rad
+        if (rad == None):
+            rad = raw_input("Radius?")
+        
+        maxDiff = args.maxDiff
+        if (maxDiff == None):
+            maxDiff = raw_input("Max Difference?")
+        
+        if (args.filter):
+            useFilter = '0'
+            config["Radius"] = rad
+            config["Max Difference"] = maxDiff
+            config["Filter"] = "True"
+        else:
+            useFilter = '1'
+
+
         photoDirs = glob.glob(tempdir+"computed/threshold/*")
         print scenedir
         for dir in photoDirs:
@@ -457,17 +550,55 @@ if __name__ == '__main__':
             
             phs = glob.glob(dir+"/left/*")
             naturalsort(phs)
-            cmd = "ActiveLighting/ActiveLighting4 decode "+outLeft+" "+codefile
+            #cmd = "ActiveLighting/ActiveLighting4 decode "+outLeft+" "+codefile
+            cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outLeft+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground
             for p in phs:
                 cmd += " "+p
             execute(cmd)
             
             phs = glob.glob(dir+"/right/*")
             naturalsort(phs)
-            cmd = "ActiveLighting/ActiveLighting4 decode "+outRight+" "+codefile
+            #cmd = "ActiveLighting/ActiveLighting4 decode "+outRight+" "+codefile
+            cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outRight+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground
             for p in phs:
                 cmd += " "+p
             execute(cmd)
+
+        if(args.foreg):
+            decodeDir = os.path.join(backDir,"decode")
+            safemkdirs(decodeDir)
+            
+            eraseForeground = '1'
+
+            photoDirs = glob.glob(backDir+"threshold/*")
+            print scenedir
+            for dir in photoDirs:
+                out = decodeDir+"/"+os.path.split(dir)[1]
+                outLeft = out+"/left"
+                outRight = out+"/right"
+                safemkdirs(outLeft)
+                safemkdirs(outRight)
+            
+                codefile = args.code
+                if(codefile == None):
+                    codefile = raw_input("Code file?")
+            
+                phs = glob.glob(dir+"/left/*")
+                naturalsort(phs)
+                #cmd = "ActiveLighting/ActiveLighting4 decode "+outLeft+" "+codefile
+                cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outLeft+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground
+                for p in phs:
+                    cmd += " "+p
+                execute(cmd)
+            
+                phs = glob.glob(dir+"/right/*")
+                naturalsort(phs)
+                #cmd = "ActiveLighting/ActiveLighting4 decode "+outRight+" "+codefile
+                cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outRight+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground
+                for p in phs:
+                    cmd += " "+p
+                execute(cmd)
+            
          
         answer = ""
         if(args.auto):
@@ -495,7 +626,6 @@ if __name__ == '__main__':
         ymax = args.ymax
         
         
-        
         if(args.xmin == None):
             xmin = raw_input("xmin?")
         if(args.xmax == None):   
@@ -517,14 +647,28 @@ if __name__ == '__main__':
             outputdir = dispDir+"/"+os.path.split(dir)[1]
             safemkdirs(outputdir)
             if not args.visonly:
-                execute("ActiveLighting/ActiveLighting4 disparity "+outputdir+" "+dir+"/left/result.flo "+dir+"/right/result.flo "+xmin+" "+xmax+" "+ymin+" "+ymax)
+                execute("ActiveLighting/Debug/ActiveLighting4 disparity "+outputdir+" "+dir+"/left/result.flo "+dir+"/right/result.flo "+xmin+" "+xmax+" "+ymin+" "+ymax)
             VisColor(outputdir, "Xout0.flo", "out0Colorx.ppm", "out0Colory.ppm")
             VisGrey(outputdir, "Xout0.flo", "out0Greyx.pgm", "out0Greyy.pgm", reverse = True)
             
             VisColor(outputdir, "Xout1.flo", "out1Colorx.ppm", "out1Colory.ppm")
             VisGrey(outputdir, "Xout1.flo", "out1Greyx.pgm", "out1Greyy.pgm")
-            
            
+
+        if (args.foreg):
+            dirs = glob.glob(os.path.join(backDir,"decode")+"/*")
+            for dir in dirs:
+                outputdir = dispDir+"/"+os.path.split(dir)[1]
+                safemkdirs(outputdir)
+                if not args.visonly:
+                    execute("ActiveLighting/Debug/ActiveLighting4 disparity "+outputdir+" "+dir+"/left/result.flo "+dir+"/right/result.flo "+xmin+" "+xmax+" "+ymin+" "+ymax)
+                VisColor(outputdir, "Xout0.flo", "out0Colorx.ppm", "out0Colory.ppm")
+                VisGrey(outputdir, "Xout0.flo", "out0Greyx.pgm", "out0Greyy.pgm", reverse = True)
+            
+                VisColor(outputdir, "Xout1.flo", "out1Colorx.ppm", "out1Colory.ppm")
+                VisGrey(outputdir, "Xout1.flo", "out1Greyx.pgm", "out1Greyy.pgm")
+
+
         answer = ""
         if(args.auto):
             step = "reproject"
@@ -575,17 +719,18 @@ if __name__ == '__main__':
             outRight = outputdir+"/"+projector+"cam1.flo"
             safemkdirs(outputdir)
             if not args.visonly:
-                execute("ActiveLighting/ActiveLighting4 reproject "+outLeft+" "+dir+"/Xout0.flo "+codeDir+"/"+projector+"/left/result.flo"+edges)
+                execute("ActiveLighting/Debug/ActiveLighting4 reproject "+outLeft+" "+dir+"/Xout0.flo "+codeDir+"/"+projector+"/left/result.flo"+edges)
             execute("FloVis/FloVis "+outLeft+" "+outputdir+"/"+projector+"cam0.ppm")
             execute("FloVis/FloVis -g "+outLeft+" "+outputdir+"/"+projector+"cam0.pgm")
             VisColor(outputdir, projector+"cam0.flo", projector+"cam0x.ppm", projector+"cam0y.ppm")
             VisGrey(outputdir, projector+"cam0.flo", projector+"cam0x.pgm", projector+"cam0y.pgm", reverse = True)
             
             if not args.visonly:
-                execute("ActiveLighting/ActiveLighting4 reproject "+outRight+" "+dir+"/Xout1.flo "+codeDir+"/"+projector+"/right/result.flo"+edges)
+                execute("ActiveLighting/Debug/ActiveLighting4 reproject "+outRight+" "+dir+"/Xout1.flo "+codeDir+"/"+projector+"/right/result.flo"+edges)
             VisColor(outputdir, projector+"cam1.flo", projector+"cam1x.ppm", projector+"cam1y.ppm")
             VisGrey(outputdir, projector+"cam1.flo", projector+"cam1x.pgm", projector+"cam1y.pgm")
             
+
         answer = ""
         if(args.auto):
             step = "merge"
@@ -626,13 +771,13 @@ if __name__ == '__main__':
             mL += " "+r+"/"+os.path.split(r)[1]+"cam0.flo"
             mR += " "+r+"/"+os.path.split(r)[1]+"cam1.flo"
             
-        cmd = "ActiveLighting/ActiveLighting4 merge "+gs+" "
+        cmd = "ActiveLighting/Debug/ActiveLighting4 merge "+gs+" "
         if not args.visonly:
             execute(cmd+mL)
         VisColor(mergeDir, "left.flo", "leftx.ppm", "lefty.ppm")
         VisGrey(mergeDir, "left.flo", "leftx.pgm", "lefty.pgm", reverse = True)
         
-        cmd = "ActiveLighting/ActiveLighting4 merge "+gs+" "
+        cmd = "ActiveLighting/Debug/ActiveLighting4 merge "+gs+" "
         if not args.visonly:
             execute(cmd+mR)
         VisColor(mergeDir, "right.flo", "rightx.ppm", "righty.ppm")
@@ -654,22 +799,45 @@ if __name__ == '__main__':
             cleanExit(config, configpath)
         if(answer == "repeat" or answer == "r"):
             step = "merge"      
-#    while(step == "buildsite" and args.sitedir != None):
-#        execute("ActiveLightingBuildSite.py "+scenedir+" "+args.sitedir)
-#        config["WebsiteDirectory"] = args.sitedir
-#        answer = ""
-#        
-#        if(args.auto):
-#            step = "none"
-#        else:
-#            answer = raw_input("Keep Going? (yes/no/repeat) ")
-#        
-#        if(answer == "yes" or answer == "y" or answer == ""):
-#            step = "none"
-#        if(answer == "no" or answer == "n"):
-#            cleanExit(config, configpath)
-#        if(answer == "repeat" or answer == "r"):
-#            step = "buildsite" 
+
+    while(step == "buildsite" and args.sitedir != None):
+        execute("python WebBuild.py "+scenedir+" "+args.sitedir)
+        config["WebsiteDirectory"] = args.sitedir
+        answer = ""
+        
+        if(args.auto):
+            step = "none"
+        else:
+            answer = raw_input("Keep Going? (yes/no/repeat) ")
+        
+        if(answer == "yes" or answer == "y" or answer == ""):
+            step = "none"
+        if(answer == "no" or answer == "n"):
+            cleanExit(config, configpath)
+        if(answer == "repeat" or answer == "r"):
+            step = "buildsite" 
+
+
+	# run warp
+    floDir = os.path.join(scenedir,"computed/disparity")
+    ambientDir = os.path.join(scenedir, "computed/rectifiedAmbient")
+    safemkdirs(os.path.join(scenedir, "computed/warp/"))
+    print "made directory " + os.path.join(scenedir, "computed/warp/")
+
+    Ldir = glob.glob(ambientDir + "/L*/left")
+    Rdir = glob.glob(ambientDir + "/L*/right")
+
+    LambientImage = os.path.join(ambientDir, Ldir[0]) + "/image002.ppm"
+    RambientImage = os.path.join(ambientDir, Rdir[0]) + "/image002.ppm"
+
+    execute("./warp " + RambientImage + " " + floDir + "/left.flo -1 " + scenedir + "computed/warp/right-warped-inv-to-left.png")
+    execute("./warp " + LambientImage + " " + floDir + "/right.flo -1 " + scenedir + "computed/warp/left-warped-inv-to-right.png")
+    execute("./warp " + LambientImage + " " + floDir + "/left.flo 0 " + scenedir + "computed/warp/left-warped-fwd-to-right.png")
+    execute("./warp " + RambientImage + " " + floDir + "/right.flo 1 " + scenedir + "computed/warp/right-warped-fwd-to-left.png")
+
+    execute("cp " + LambientImage + " " + scenedir + "computed/warp/left.ppm")
+    execute("cp " + RambientImage + " " + scenedir + "computed/warp/right.ppm")
+
     print "Done with the scene and clean exit"      
     cleanExit(config, configpath) 
                 
