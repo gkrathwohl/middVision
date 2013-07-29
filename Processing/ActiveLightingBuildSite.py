@@ -94,7 +94,7 @@ scenename = os.path.split(src)[1]
 decodes = glob.glob(src+"/computed/decode/*")
 numprojectors = len(decodes)
 for projector in decodes:
-    num = os.path.split(projector)[1][1:]
+    num = str(int(os.path.split(projector)[1][1:]) -8)
     convert(projector+"/left/cresult0.ppm ",dst+"/imgs/p"+num+"m0s0r0g0x0.jpg")
 
     convert(projector+"/right/cresult0.ppm ",dst+"/imgs/p"+num+"m0s1r0g0x0.jpg")

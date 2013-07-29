@@ -57,12 +57,14 @@ def VisColor(dir, input, outputx, outputy, speed="10"):
     txtDir = os.path.join(scenedir,"computed/");
     execute("FloVis/Debug/FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultColor.txt")
 
+
 def VisGrey(dir, input,outputx, outputy, reverse = False):
     txtDir = os.path.join(scenedir,"computed/");
     if(reverse):
         execute("FloVis/Debug/FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultGrey.txt")
     else:
         execute("FloVis/Debug/FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultGrey.txt")
+
     
 def cleanExit(config, configpath):
     json.dump(config, open(configpath, 'w'), sort_keys=True, indent = 4 )
@@ -487,12 +489,13 @@ if __name__ == '__main__':
                     for p in photos:
                         cmd += p+" "
                     execute(cmd)
-                
+
                 
                     photos = []
                     for e in exposures:
                         photos.append(glob.glob(e+"/right/*")[i])
                 
+
                     cmd = "ActiveLighting/Debug/ActiveLighting4 threshold "+outRight+"/"+os.path.split(photos[0])[1]+" "+cert+" "
                     for p in photos:
                         cmd += p+" "
@@ -720,8 +723,10 @@ if __name__ == '__main__':
             safemkdirs(outputdir)
             if not args.visonly:
                 execute("ActiveLighting/Debug/ActiveLighting4 reproject "+outLeft+" "+dir+"/Xout0.flo "+codeDir+"/"+projector+"/left/result.flo"+edges)
+
             execute("FloVis/Debug/FloVis "+outLeft+" "+outputdir+"/"+projector+"cam0.ppm")
             execute("FloVis/Debug/FloVis -g "+outLeft+" "+outputdir+"/"+projector+"cam0.pgm")
+
             VisColor(outputdir, projector+"cam0.flo", projector+"cam0x.ppm", projector+"cam0y.ppm")
             VisGrey(outputdir, projector+"cam0.flo", projector+"cam0x.pgm", projector+"cam0y.pgm", reverse = True)
             
@@ -816,6 +821,28 @@ if __name__ == '__main__':
             cleanExit(config, configpath)
         if(answer == "repeat" or answer == "r"):
             step = "buildsite" 
+
+
+
+	# run warp
+    floDir = os.path.join(scenedir,"computed/disparity")
+    ambientDir = os.path.join(scenedir, "computed/rectifiedAmbient")
+    safemkdirs(os.path.join(scenedir, "computed/warp/"))
+    print "made directory " + os.path.join(scenedir, "computed/warp/")
+
+    Ldir = glob.glob(ambientDir + "/L*/left")
+    Rdir = glob.glob(ambientDir + "/L*/right")
+
+    LambientImage = os.path.join(ambientDir, Ldir[0]) + "/image002.ppm"
+    RambientImage = os.path.join(ambientDir, Rdir[0]) + "/image002.ppm"
+
+    execute("./warp " + RambientImage + " " + floDir + "/left.flo -1 " + scenedir + "computed/warp/right-warped-inv-to-left.png")
+    execute("./warp " + LambientImage + " " + floDir + "/right.flo -1 " + scenedir + "computed/warp/left-warped-inv-to-right.png")
+    execute("./warp " + LambientImage + " " + floDir + "/left.flo 0 " + scenedir + "computed/warp/left-warped-fwd-to-right.png")
+    execute("./warp " + RambientImage + " " + floDir + "/right.flo 1 " + scenedir + "computed/warp/right-warped-fwd-to-left.png")
+
+    execute("cp " + LambientImage + " " + scenedir + "computed/warp/left.ppm")
+    execute("cp " + RambientImage + " " + scenedir + "computed/warp/right.ppm")
 
     print "Done with the scene and clean exit"      
     cleanExit(config, configpath) 

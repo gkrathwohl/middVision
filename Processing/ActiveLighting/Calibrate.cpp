@@ -152,8 +152,6 @@ void calibrate(int pairsnum, int circles, char** left, char** right, int boardw,
 
 
 	//Allocate storage
-
-
 	CvMat* image_points1      = cvCreateMat(n_boards*board_n,2,CV_32FC1);
 	CvMat* object_points1     = cvCreateMat(n_boards*board_n,3,CV_32FC1);
 	CvMat* point_counts1      = cvCreateMat(n_boards,1,CV_32SC1);
@@ -270,6 +268,7 @@ void calibrate(int pairsnum, int circles, char** left, char** right, int boardw,
 			object_points1, image_points1, point_counts1,
 			image_sz, intrinsic_matrix1, distortion_coeffs1, NULL, NULL, 0);
 
+	
 
 	cvCalibrateCamera2(
 			object_points2, image_points2, point_counts2,
