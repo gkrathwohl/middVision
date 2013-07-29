@@ -29,7 +29,7 @@ using namespace std;
 void greyThresh(char* outdir, char **imList, int numIm);
 
 // decode images (defined in GreyDecode.cpp)
-CFloatImage greyDecode(char* outdir, char* codefile, int direction, int rad, int maxDiff, int useFilter, int eraseForeground, char **imList, int numIm);
+CFloatImage greyDecode(char* outdir, char* codefile, int direction, int rad, int maxDiff, int useFilter, int eraseForeground, char* maskdir, char **imList, int numIm);
 
 // combine multiple confidence maps into one (defined in GreyThresh.cpp)				
 void combineConfidence(char *outfile, char **imList, int numIm, int certain);
@@ -47,6 +47,9 @@ void calibrate(int pairsnum, int circles, char** left, char** right, int boardw,
 
 void rectify(int images, char* destdir, char** matrices, char** photos);
 
+void createMask(char* outdir, int diffThresh, char** imList0, int numIm0);
+
+void mergeMasks(char* outdir, char** imList, int mergeThresh, int numIm0);
 
 
 
@@ -57,7 +60,7 @@ void rectify(int images, char* destdir, char** matrices, char** photos);
 
 int main(int argc, char* argv[])
 {
-
+	int count = 0;
     try {
 	    if (argc < 2)
 			throw CError("\n  usage: activeLighting <mode> <params>\n"
@@ -65,6 +68,7 @@ int main(int argc, char* argv[])
   "mode = calibrate  :  calibrate a pair of cameras using images of a chess board\n"
   "mode = rectify    :  rectify images based on a provided calibration\n"
   "mode = confidence :  read images taken by the camera and produces confidence maps \n"
+  "mode = detect     :	detect foreground object and saves a mask\n"
   "mode = threshold  :  combine different confidence maps into a single thresholded image\n"
   "mode = decode     :  read thresholded images and decode them \n"
   "mode = disparity  :  compute pair of disparity maps from labeled flo images \n"
@@ -132,7 +136,38 @@ int main(int argc, char* argv[])
 						            return 0;
 						}
 
-			
+
+		if(modestr.compare("detect") == 0){
+			if (argc < 4)
+				throw CError("usage: ActiveLighting4 detect outdir diffThresh im0 [im1 ...]");
+			{
+				//detect foreground object from ambient detection images
+
+				char* outdir = argv[2];
+				int diffThresh = atoi(argv[3]);
+				char** imList = &argv[4];
+				assert((argc-4)/2 % 2 == 0);
+				int numIm = (argc - 4);
+				createMask(outdir, diffThresh, imList, numIm);
+			}
+			return 0;
+		}
+
+		if(modestr.compare("mergeMasks") == 0){
+			if (argc < 3)
+				throw CError("usage: ActiveLighting4 mergeMasks outdir im0 [im1 ...]");
+			{
+				//merge masks after detecting step
+
+				char* outdir = argv[2];
+				char** imList = &argv[3];
+				int numIm = (argc - 3);
+				mergeMasks(outdir, imList, numIm/2, numIm);
+			}
+			return 0;
+		}
+
+
 		if(modestr.compare("threshold") == 0){
 			if (argc < 5)
 				throw CError("usage: ActiveLighting4 threshold out.pgm certainthresh in1.pgm in2.pgm ...");
@@ -150,8 +185,8 @@ int main(int argc, char* argv[])
 
 
 		if(modestr.compare("decode") == 0){
-			if (argc < 8)
-				throw CError("usage: ActiveLighting4 decode outdir codefile im0 [im1 ...]    <vertical patterns first, then horizontal>");
+			if (argc < 9)
+				throw CError("usage: ActiveLighting4 decode outdir codefile rad maxDiff useFilter eraseForeground maskdir im0 [im1 ...]    <vertical patterns first, then horizontal>");
 			{
 
 				// decode images
@@ -161,12 +196,13 @@ int main(int argc, char* argv[])
 				int maxDiff = atoi(argv[5]);
 				int useFilter = atoi(argv[6]);
 				int eraseForeground = atoi(argv[7]);
-				char **imList = &argv[8];
-				assert((argc-8)/2 % 2 == 0);
-				int numIm = (argc-8) / 2;
-				CFloatImage x = greyDecode(outdir, codefile, 0, rad, maxDiff, useFilter, eraseForeground, imList, numIm);
-				imList = &argv[8+numIm];
-				CFloatImage y = greyDecode(outdir, codefile, 1, rad, maxDiff, useFilter, eraseForeground, imList, numIm);
+				char* maskdir = argv[8];
+				char **imList = &argv[9];
+				assert((argc-9)/2 % 2 == 0);
+				int numIm = (argc-9) / 2;
+				CFloatImage x = greyDecode(outdir, codefile, 0, rad, maxDiff, useFilter, eraseForeground, maskdir, imList, numIm);
+				imList = &argv[9+numIm];
+				CFloatImage y = greyDecode(outdir, codefile, 1, rad, maxDiff, useFilter, eraseForeground, maskdir, imList, numIm);
 
 				CFloatImage merged = mergeToFloImage(x,y);
 				char filename[1024];
