@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../Calibrate.cpp \
+../DetectForeground.cpp\
 ../Disparities.cpp \
 ../GreyDecode.cpp \
 ../GreyThresh.cpp \
@@ -15,6 +16,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./Calibrate.o \
+./DetectForeground.o\
 ./Disparities.o \
 ./GreyDecode.o \
 ./GreyThresh.o \
