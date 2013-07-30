@@ -221,7 +221,7 @@ if __name__ == '__main__':
         if len(leftIms) != len(rightIms):
             print("Error: Left and right calibration folders do not contain same number of images.\n")
             exit(0)
-        while (leftIms == 0 or rightIms == 0):
+        while (len(leftIms) == 0 or len(rightIms) == 0):
             print("No JPG images found in calibration folders...")
             subdirs = os.listdir(leftIms)
             for thing in subdirs:
@@ -863,13 +863,13 @@ if __name__ == '__main__':
     # delete temp files
     answer = raw_input("Erase intermediate files? (default yes)")
     if(answer == "yes" or answer == "y" or answer == ""):
-        execute("rm " + scenedir + "computed/calibration"
-        execute("rm " + scenedir + "computed/confidence"
-        execute("rm " + scenedir + "computed/decode"
-        execute("rm " + scenedir + "computed/disparityintermediate"
-        execute("rm " + scenedir + "computed/rectified"
-        execute("rm " + scenedir + "computed/reproject"
-        execute("rm " + scenedir + "computed/threshold"
+        execute("rm " + scenedir + "computed/calibration")
+        execute("rm " + scenedir + "computed/confidence")
+        execute("rm " + scenedir + "computed/decode")
+        execute("rm " + scenedir + "computed/disparityintermediate")
+        execute("rm " + scenedir + "computed/rectified")
+        execute("rm " + scenedir + "computed/reproject")
+        execute("rm " + scenedir + "computed/threshold")
 
     print "Done with the scene and clean exit"      
     cleanExit(config, configpath) 
