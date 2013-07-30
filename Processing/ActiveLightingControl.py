@@ -55,15 +55,15 @@ def execute(cmd):
     
 def VisColor(dir, input, outputx, outputy, speed="10"):
     txtDir = os.path.join(scenedir,"computed/");
-    execute("FloVis/Debug/FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultColor.txt")
+    execute("FloVis/FloVis -s "+speed+" -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultColor.txt")
 
 
 def VisGrey(dir, input,outputx, outputy, reverse = False):
     txtDir = os.path.join(scenedir,"computed/");
     if(reverse):
-        execute("FloVis/Debug/FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultGrey.txt")
+        execute("FloVis/FloVis -g -r -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultGrey.txt")
     else:
-        execute("FloVis/Debug/FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultGrey.txt")
+        execute("FloVis/FloVis -g -i "+vmin+" -x "+vmax+" "+dir+"/"+input+" "+dir+"/"+outputx+" "+dir+"/"+outputy + " > " + txtDir + "resultGrey.txt")
 
     
 def cleanExit(config, configpath):
@@ -740,8 +740,8 @@ if __name__ == '__main__':
             if not args.visonly:
                 execute("ActiveLighting/Debug/ActiveLighting4 reproject "+outLeft+" "+dir+"/Xout0.flo "+codeDir+"/"+projector+"/left/result.flo"+edges)
 
-            execute("FloVis/Debug/FloVis "+outLeft+" "+outputdir+"/"+projector+"cam0.ppm")
-            execute("FloVis/Debug/FloVis -g "+outLeft+" "+outputdir+"/"+projector+"cam0.pgm")
+            execute("FloVis/FloVis "+outLeft+" "+outputdir+"/"+projector+"cam0.ppm")
+            execute("FloVis/FloVis -g "+outLeft+" "+outputdir+"/"+projector+"cam0.pgm")
 
             VisColor(outputdir, projector+"cam0.flo", projector+"cam0x.ppm", projector+"cam0y.ppm")
             VisGrey(outputdir, projector+"cam0.flo", projector+"cam0x.pgm", projector+"cam0y.pgm", reverse = True)
