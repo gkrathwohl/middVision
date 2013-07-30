@@ -860,6 +860,17 @@ if __name__ == '__main__':
     execute("cp " + LambientImage + " " + scenedir + "computed/warp/left.ppm")
     execute("cp " + RambientImage + " " + scenedir + "computed/warp/right.ppm")
 
+    # delete temp files
+    answer = raw_input("Erase intermediate files? (default yes)")
+    if(answer == "yes" or answer == "y" or answer == ""):
+        execute("rm " + scenedir + "computed/calibration"
+        execute("rm " + scenedir + "computed/confidence"
+        execute("rm " + scenedir + "computed/decode"
+        execute("rm " + scenedir + "computed/disparityintermediate"
+        execute("rm " + scenedir + "computed/rectified"
+        execute("rm " + scenedir + "computed/reproject"
+        execute("rm " + scenedir + "computed/threshold"
+
     print "Done with the scene and clean exit"      
     cleanExit(config, configpath) 
                 
