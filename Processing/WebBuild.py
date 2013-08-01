@@ -63,6 +63,11 @@ dst = removeTrailingSlash(dst)
 safemkdirs(dst+"/imgs")
 scenename = os.path.split(src)[1]
 
+#copy info and config files
+safemkdirs(dst+"/sceneInfo")
+os.system("cp " + src+"/computed/config.txt " + dst+"/sceneInfo")
+os.system("cp " + src+"/orig/info.txt " + dst+"/sceneInfo")
+
 #convert warp images
 warpdir = src+"/computed/warp/"
 safemkdirs(dst+"/imgs/warp")
@@ -488,12 +493,12 @@ mainfile.write("""</table>
 mainfile.write("""
 </table> 
 </td>
-
+</table> 
  """)
     
 
 mainfile.write("""
-</table>""")
+<a href="sceneInfo/"> Additional Scene Information </a>""")
 
 
 print "Done with website built"
