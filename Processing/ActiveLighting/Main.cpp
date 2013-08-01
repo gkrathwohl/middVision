@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
 				char* outdir = argv[2];
 				char** imList = &argv[3];
 				int numIm = (argc - 3);
-				mergeMasks(outdir, imList, numIm/2, numIm);
+				mergeMasks(outdir, imList, numIm/2+1, numIm);
 			}
 			return 0;
 		}

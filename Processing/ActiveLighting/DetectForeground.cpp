@@ -42,9 +42,9 @@ void mergeMasks(char* outdir, char** imList1, int mergeThresh, int count) {
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
                 if (im.Pixel(x, y, 0) == 0)
-                  //  printf("temp.pixel(%d, %d, 0) is %d.",x, y, temp.Pixel(x, y, 0)); 
                     temp.Pixel(x, y, 0) = temp.Pixel(x, y, 0)+1;
-                    //printf("temp.pixel(%d, %d, 0) is %d.",x, y, temp.Pixel(x, y, 0)); }
+                else
+                    temp.Pixel(x, y, 0) = temp.Pixel(x, y, 0);
             }
         }
         num++;
@@ -68,7 +68,6 @@ void createMask(char* outdir, int diffThresh, char** imList0, int numIm0) {
     CByteImage im0, im1, mask, maskGrey;
     CShape sh;
     int i, j, w, h, nB, count = 0, verbose = 1;
-    //char** imList1;
     printf("numIm0 is %d\n", numIm0);
     for (i = 0; i < numIm0-1; i++) {
         for (j = i+1; j < numIm0; j++) {
@@ -101,13 +100,11 @@ void createMask(char* outdir, int diffThresh, char** imList0, int numIm0) {
             char outname[1024];
             sprintf(outname, "%s/mask%d_%d.png", outdir, i, j);
             WriteImageVerb(maskGrey, outname, verbose);
-            //imList1[count] = &outname;
             printf("count is %d\n", count);
             printf("outname is %s\n", outname);
             count++;
         }
     }   
-   // mergeMasks(outdir, imList1, count/2, count); 
 }
 
 
