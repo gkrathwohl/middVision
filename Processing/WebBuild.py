@@ -72,7 +72,7 @@ convert(warpdir+"right.ppm", dst+"/imgs/warp/right.jpg")
 convert(warpdir+"right-warped-inv-to-left.png", dst+"/imgs/warp/R2Linv.jpg")
 convert(warpdir+"left-warped-inv-to-right.png", dst+"/imgs/warp/L2Rinv.jpg")
 convert(warpdir+"left-warped-fwd-to-right.png", dst+"/imgs/warp/L2Rfwd.jpg")
-convert(warpdir+"right-warped-inv-to-left.png", dst+"/imgs/warp/R2Lfwd.jpg")
+convert(warpdir+"right-warped-fwd-to-left.png", dst+"/imgs/warp/R2Lfwd.jpg")
 
 #change disparity
 disparitydir = src+"/computed/disparity/"
@@ -370,10 +370,10 @@ Hit the T key to toggle left and right.
 </tr></table>
 
 
-</td></table> Warp: <a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/R2Linv.jpg','imgs/warp/left.jpg')">Right to left inv</a>
-<a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/L2Rinv.jpg','imgs/warp/right.jpg')">Left to right inv</a>
-<a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/L2Rfwd.jpg','imgs/warp/right.jpg')">Left to right fwd</a>
-<a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/R2Lfwd.jpg','imgs/warp/left.jpg')">Left to right fwd</a>
+</td></table> Mouse over to Warp: <a href="imgs/warp/R2Linv.jpg" onMouseOver="showImg('imgs/warp/R2Linv.jpg','imgs/warp/left.jpg')">Right to left inv</a>
+<a href="imgs/warp/L2Rinv.jpg" onMouseOver="showImg('imgs/warp/L2Rinv.jpg','imgs/warp/right.jpg')">Left to right inv</a>
+<a href="imgs/warp/L2Rfwd.jpg" onMouseOver="showImg('imgs/warp/L2Rfwd.jpg','imgs/warp/right.jpg')">Left to right fwd</a>
+<a href="imgs/warp/R2Lfwd.jpg" onMouseOver="showImg('imgs/warp/R2Lfwd.jpg','imgs/warp/left.jpg')">Right to left fwd</a>
 
 
 
