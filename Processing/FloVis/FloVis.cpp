@@ -112,6 +112,7 @@ int main(int argc, char** argv){
 
 	CShape sh = CShape(input.Shape().width, input.Shape().height, 3);
 
+	//merge 2 flo files if you want to.
 	if (merge == 1) {
 		printf("\n\n\n\n\n merging! \n\n\n");
 		for(int i = 0; i < sh.width; i++){
@@ -147,27 +148,7 @@ int main(int argc, char** argv){
 
 	}
 
-	//get new max and min values from 5th and 95th percentiles of values (+15 ish)?
-	/*float vals[sh.width*sh.height];
-	float val;
-	for(int i = 0; i < sh.width; i++){
-		for(int j = 0; j < sh.height; j++){
-			val = input.Pixel(i,j,0);
-			vals[i+(j*sh.width)] = val;
-		}
-	}
 
-	
-	//qsort(vals, sh.width*sh.height, sizeof(float), compare);
-
-	//min = vals[(int)floor(.95*sh.width*sh.height)];
-	//max = vals[(int)floor(.05*sh.width*sh.height)];
-
-	printf("\n\n\n\n\n");
-	printf("min: %d max: %d", min, max);
-	printf("\n\n\n\n\n");
-	/////////////////////////////////////////////////
-*/
 	if(grey){
 
 		CByteImage disp0(sh.width, sh.height, 1);
