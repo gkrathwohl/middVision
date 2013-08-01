@@ -368,6 +368,15 @@ Hit the T key to toggle left and right.
 <td><img width="600" height = "400" id = 'im2' src = '' alt = 'image2' onclick = "JavaScript:window.open(convert(document.getElementById('im2').src))"/><br/>
 <span id = 'label2'></span></td>
 </tr></table>
+
+
+</td></table> Warp: <a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/R2Linv.jpg','imgs/warp/left.jpg')">Right to left inv</a>
+<a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/L2Rinv.jpg','imgs/warp/right.jpg')">Left to right inv</a>
+<a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/L2Rfwd.jpg','imgs/warp/right.jpg')">Left to right fwd</a>
+<a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/R2Lfwd.jpg','imgs/warp/left.jpg')">Left to right fwd</a>
+
+
+
 </td></tr></table>
 </div>
 <table cellspacing="3">
@@ -484,11 +493,7 @@ mainfile.write("""
     
 
 mainfile.write("""
-</table>
-</td></table> Warp:
-</div><a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/R2Linv.jpg','imgs/warp/left.jpg')">Right to left inv</a>
-</div><a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/L2Rinv.jpg','imgs/warp/right.jpg')">Left to right inv</a>
-</div><a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/L2Rfwd.jpg','imgs/warp/right.jpg')">Left to right fwd</a>
-</div><a href="imgs/warp/left.jpg" onMouseOver="showImg('imgs/warp/R2Lfwd.jpg','imgs/warp/left.jpg')">Left to right fwd</a>
-""")
+</table>""")
+
+
 print "Done with website built"
