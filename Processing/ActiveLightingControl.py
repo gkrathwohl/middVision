@@ -585,7 +585,7 @@ if __name__ == '__main__':
             phs = glob.glob(dir+"/left/*")
             naturalsort(phs)
             #cmd = "ActiveLighting/ActiveLighting4 decode "+outLeft+" "+codefile
-            cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outLeft+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground+" "+maskLeft+"/result.pgm"
+            cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outLeft+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground+" "+maskLeft+"/result.png"
             for p in phs:
                 cmd += " "+p
             execute(cmd)
@@ -593,7 +593,7 @@ if __name__ == '__main__':
             phs = glob.glob(dir+"/right/*")
             naturalsort(phs)
             #cmd = "ActiveLighting/ActiveLighting4 decode "+outRight+" "+codefile
-            cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outRight+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground+" "+maskRight+"/result.pgm"
+            cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outRight+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground+" "+maskRight+"/result.png"
             for p in phs:
                 cmd += " "+p
             execute(cmd)
@@ -620,7 +620,7 @@ if __name__ == '__main__':
                 phs = glob.glob(dir+"/left/*")
                 naturalsort(phs)
                 #cmd = "ActiveLighting/ActiveLighting4 decode "+outLeft+" "+codefile
-                cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outLeft+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground+" "+maskLeft+"/mask0_1.png"
+                cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outLeft+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground+" "+maskLeft+"/result.png"
                 for p in phs:
                     cmd += " "+p
                 execute(cmd)
@@ -628,7 +628,7 @@ if __name__ == '__main__':
                 phs = glob.glob(dir+"/right/*")
                 naturalsort(phs)
                 #cmd = "ActiveLighting/ActiveLighting4 decode "+outRight+" "+codefile
-                cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outRight+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground+" "+maskRight+"/mask0_1.png"
+                cmd = "ActiveLighting/Debug/ActiveLighting4 decode "+outRight+" "+codefile+" "+rad+" "+maxDiff+" "+useFilter+" "+eraseForeground+" "+maskRight+"/result.png"
                 for p in phs:
                     cmd += " "+p
                 execute(cmd)
