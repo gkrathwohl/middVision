@@ -841,6 +841,7 @@ if __name__ == '__main__':
 
 
 	# run warp
+    step = warp
     while(step == "warp"):  
         print "warping"
         floDir = os.path.join(scenedir,"computed/disparity")
