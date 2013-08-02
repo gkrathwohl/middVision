@@ -841,24 +841,25 @@ if __name__ == '__main__':
 
 
 	# run warp
-    floDir = os.path.join(scenedir,"computed/disparity")
-    ambientDir = os.path.join(scenedir, "computed/rectifiedAmbient")
-    safemkdirs(os.path.join(scenedir, "computed/warp/"))
-    print "made directory " + os.path.join(scenedir, "computed/warp/")
+    while(step == "warp"):  
+        floDir = os.path.join(scenedir,"computed/disparity")
+        ambientDir = os.path.join(scenedir, "computed/rectifiedAmbient")
+        safemkdirs(os.path.join(scenedir, "computed/warp/"))
+        print "made directory " + os.path.join(scenedir, "computed/warp/")
 
-    Ldir = glob.glob(ambientDir + "/L*/left")
-    Rdir = glob.glob(ambientDir + "/L*/right")
+        Ldir = glob.glob(ambientDir + "/L*/left")
+        Rdir = glob.glob(ambientDir + "/L*/right")
 
-    LambientImage = os.path.join(ambientDir, Ldir[0]) + "/image002.ppm"
-    RambientImage = os.path.join(ambientDir, Rdir[0]) + "/image002.ppm"
+        LambientImage = os.path.join(ambientDir, Ldir[0]) + "/image002.ppm"
+        RambientImage = os.path.join(ambientDir, Rdir[0]) + "/image002.ppm"
 
-    execute("./warp " + RambientImage + " " + floDir + "/left.flo -1 " + scenedir + "computed/warp/right-warped-inv-to-left.png")
-    execute("./warp " + LambientImage + " " + floDir + "/right.flo -1 " + scenedir + "computed/warp/left-warped-inv-to-right.png")
-    execute("./warp " + LambientImage + " " + floDir + "/left.flo 0 " + scenedir + "computed/warp/left-warped-fwd-to-right.png")
-    execute("./warp " + RambientImage + " " + floDir + "/right.flo 1 " + scenedir + "computed/warp/right-warped-fwd-to-left.png")
+        execute("./warp " + RambientImage + " " + floDir + "/left.flo -1 " + scenedir + "computed/warp/right-warped-inv-to-left.png")
+        execute("./warp " + LambientImage + " " + floDir + "/right.flo -1 " + scenedir + "computed/warp/left-warped-inv-to-right.png")
+        execute("./warp " + LambientImage + " " + floDir + "/left.flo 0 " + scenedir + "computed/warp/left-warped-fwd-to-right.png")
+        execute("./warp " + RambientImage + " " + floDir + "/right.flo 1 " + scenedir + "computed/warp/right-warped-fwd-to-left.png")
 
-    execute("cp " + LambientImage + " " + scenedir + "computed/warp/left.ppm")
-    execute("cp " + RambientImage + " " + scenedir + "computed/warp/right.ppm")
+        execute("cp " + LambientImage + " " + scenedir + "computed/warp/left.ppm")
+        execute("cp " + RambientImage + " " + scenedir + "computed/warp/right.ppm")
 
     # delete temp files
     answer = raw_input("Erase intermediate files? (default yes)")
