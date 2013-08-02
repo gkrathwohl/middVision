@@ -842,6 +842,7 @@ if __name__ == '__main__':
 
 	# run warp
     while(step == "warp"):  
+        print "warping"
         floDir = os.path.join(scenedir,"computed/disparity")
         ambientDir = os.path.join(scenedir, "computed/rectifiedAmbient")
         safemkdirs(os.path.join(scenedir, "computed/warp/"))
@@ -860,6 +861,8 @@ if __name__ == '__main__':
 
         execute("cp " + LambientImage + " " + scenedir + "computed/warp/left.ppm")
         execute("cp " + RambientImage + " " + scenedir + "computed/warp/right.ppm")
+
+        cleanExit(config, configpath)
 
     # delete temp files
     answer = raw_input("Erase intermediate files? (default yes)")
