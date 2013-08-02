@@ -9,9 +9,6 @@
 # v1.2 6/30/2011 - shows color under cursor
 # v1.3 7/15/2011 - major clean up, used tuples everywhere, changed representation of crop area
 
-# Greg & York Summer 2013
-# v1.4 6/16/2013 - shows HSV color under cursor
-
 # TODO:
 # add zoom out feature!
 # (need to figure out how to clear image area out of bounds)
@@ -20,8 +17,6 @@
 import os, sys, glob
 import Tkinter as tk
 import Image, ImageTk, ImageChops
-import math
-import re
 
 if len(sys.argv) != 3:
     print "usage: %s im1 im2" % sys.argv[0]
@@ -225,15 +220,9 @@ class flipper:
             xy = t2add(self.cursor, self.offset)
             pix = getpixel(self.fullim2, xy)
         else:
-			xy = self.cursor
-			pix = getpixel(self.fullim1, xy)
-			if (len([pix]) == 3): #color, 3 bands
-			    hsv = rgb2hsv(pix[0], pix[1], pix[2])
-			elif (len([pix]) == 1): #grayscale, 1 band
-			    hsv = rgb2hsv(pix, pix, pix)
-			else:
-			    hsv = (0, 0, 0)
-        self.lcursor.configure(text = "Position: %5d,%5d: RGB: %6d HSV: %2d %.2f %.2f" % (xy + (pix,) + (hsv[0], hsv[1], hsv[2])))
+            xy = self.cursor
+            pix = getpixel(self.fullim1, xy)
+        self.lcursor.configure(text = "%4d,%4d: %s" % (xy + (pix,)))
 
     # update images
     def update(self):
@@ -284,30 +273,6 @@ class flipper:
 
 # utility functions
 
-    
-#RGB to HSV color format
-#Source: http://code.activestate.com/recipes/576919-python-rgb-and-hsv-conversion/
-def rgb2hsv(r, g, b):
-    r, g, b = r/255.0, g/255.0, b/255.0
-    mx = max(r, g, b)
-    mn = min(r, g, b)
-    df = mx-mn
-    if mx == mn:
-        h = 0
-    elif mx == r:
-        h = (60 * ((g-b)/df) + 360) % 360
-    elif mx == g:
-        h = (60 * ((b-r)/df) + 120) % 360
-    elif mx == b:
-        h = (60 * ((r-g)/df) + 240) % 360
-    if mx == 0:
-        s = 0
-    else:
-        s = df/mx
-    v = mx
-    return h, s, v
-
-
 # t2 - operations on tuples of 2 ints
 def t2add(a, b):
     a1, a2 = a
@@ -345,3 +310,4 @@ def getpixel(im, xy):
 
 # run the whole thing
 flipper(sys.argv[1], sys.argv[2])
+
